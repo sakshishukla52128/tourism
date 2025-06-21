@@ -1,0 +1,243 @@
+/* Destinations Page */
+.destinations-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.destinations-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.destinations-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.destinations-header p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+}
+
+/* Filters Section */
+.filters-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.search-box {
+  position: relative;
+  flex-grow: 1;
+  max-width: 500px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  border-color: #6e8efb;
+  box-shadow: 0 0 0 3px rgba(110, 142, 251, 0.2);
+}
+
+.search-box i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #95a5a6;
+}
+
+.filter-dropdowns {
+  display: flex;
+  gap: 15px;
+}
+
+.filter-dropdowns select {
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.filter-dropdowns select:focus {
+  border-color: #6e8efb;
+}
+
+/* Destinations Grid */
+.destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+}
+
+.no-results h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.no-results p {
+  color: #7f8c8d;
+}
+
+/* Destination Card */
+.destination-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.destination-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-image {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: white;
+}
+
+.card-overlay h3 {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.card-overlay p {
+  opacity: 0.9;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+
+.card-meta i {
+  margin-right: 5px;
+  color: #6e8efb;
+}
+
+.description {
+  color: #34495e;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.expanded-content {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.expanded-content h4 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.expanded-content ul {
+  list-style-type: none;
+  margin-bottom: 15px;
+}
+
+.expanded-content li {
+  padding: 5px 0;
+  color: #34495e;
+  position: relative;
+  padding-left: 20px;
+}
+
+.expanded-content li::before {
+  content: '•';
+  color: #6e8efb;
+  position: absolute;
+  left: 0;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #6e8efb;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 0;
+  display: inline-block;
+}
+
+.toggle-btn:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-box {
+    max-width: 100%;
+  }
+  
+  .filter-dropdowns {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .destinations-header h1 {
+    font-size: 2rem;
+  }
+  
+  .filter-dropdowns {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .filter-dropdowns select {
+    width: 100%;
+  }
+}

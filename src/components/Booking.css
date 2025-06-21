@@ -1,0 +1,553 @@
+/* Base styles */
+.booking-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
+}
+
+.tabs button.active {
+  border-bottom-color: #3498db;
+  color: #3498db;
+  font-weight: bold;
+}
+
+/* Form styles */
+.booking-form {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.booking-form h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.form-section h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+/* Feature toggles */
+.feature-toggle {
+  margin-bottom: 15px;
+}
+
+.feature-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.feature-toggle label:hover {
+  background: #e9ecef;
+}
+
+.feature-toggle input[type="checkbox"] {
+  width: auto;
+}
+
+.feature-details {
+  margin-top: 15px;
+  padding: 20px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hotel suggestions */
+.hotel-suggestions {
+  margin-top: 20px;
+}
+
+.hotel-suggestions h3 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.hotel-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.hotel-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.hotel-card:hover {
+  border-color: #3498db;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+}
+
+.hotel-card.selected {
+  border-color: #3498db;
+  background-color: #e3f2fd;
+}
+
+.hotel-card h4 {
+  margin: 0 0 10px;
+  color: #2c3e50;
+}
+
+.hotel-card .rating {
+  color: #f39c12;
+  margin-bottom: 5px;
+}
+
+.hotel-card .price {
+  font-weight: bold;
+  color: #27ae60;
+  margin-bottom: 5px;
+}
+
+.hotel-card .amenities {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.hotel-confirmation {
+  margin-top: 15px;
+  padding: 15px;
+  background: #e8f5e9;
+  border-radius: 6px;
+  border: 1px solid #a5d6a7;
+}
+
+/* Weather info */
+.weather-info {
+  background: #e3f2fd !important;
+  border-color: #bbdefb !important;
+}
+
+.current-weather {
+  margin-bottom: 15px;
+}
+
+.forecast-day {
+  padding: 8px 0;
+  border-bottom: 1px dashed #bbdefb;
+}
+
+.forecast-day:last-child {
+  border-bottom: none;
+}
+
+/* Reviews */
+.reviews {
+  background: #fff8e1 !important;
+  border-color: #ffecb3 !important;
+}
+
+.review {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ffecb3;
+}
+
+.review:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.review-author {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.review-rating {
+  color: #f39c12;
+}
+
+.review-comment {
+  margin: 0;
+  color: #555;
+}
+
+/* Buttons */
+.search-btn,
+.book-btn,
+.submit-btn,
+.print-btn,
+.back-btn,
+.new-booking-btn {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: inline-block;
+  text-align: center;
+}
+
+.search-btn,
+.book-btn {
+  background: #3498db;
+  color: white;
+  margin-top: 10px;
+}
+
+.search-btn:hover,
+.book-btn:hover {
+  background: #2980b9;
+}
+
+.submit-btn {
+  background: #2ecc71;
+  color: white;
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.submit-btn:hover {
+  background: #27ae60;
+}
+
+.print-btn {
+  background: #3498db;
+  color: white;
+}
+
+.print-btn:hover {
+  background: #2980b9;
+}
+
+.back-btn {
+  background: #95a5a6;
+  color: white;
+  margin-left: 10px;
+}
+
+.back-btn:hover {
+  background: #7f8c8d;
+}
+
+.new-booking-btn {
+  background: #e74c3c;
+  color: white;
+  margin-left: 10px;
+}
+
+.new-booking-btn:hover {
+  background: #c0392b;
+}
+
+/* Ticket styles */
+.ticket {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ticket h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.ticket-details {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  background: #f9f9f9;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #ccc;
+}
+
+.airline, .train {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.booking-id {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.flight-info, .train-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.from, .to {
+  text-align: center;
+  flex: 1;
+}
+
+.city {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.time {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 5px 0;
+  color: #3498db;
+}
+
+.date {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.duration {
+  text-align: center;
+  flex: 1;
+}
+
+.flight-duration, .train-duration {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.flight-icon, .train-icon {
+  font-size: 24px;
+  margin-top: 5px;
+}
+
+.flight-number, .train-number {
+  text-align: center;
+  margin: 15px 0;
+  padding: 10px;
+  background: #e3f2fd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+
+.passenger {
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+  display: flex;
+  align-items: center;
+}
+
+.passenger-number {
+  margin-right: 10px;
+  color: #7f8c8d;
+}
+
+.passenger-name {
+  font-weight: 500;
+}
+
+.price {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #27ae60;
+  margin: 20px 0;
+}
+
+.barcode {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.barcode-image {
+  font-family: monospace;
+  font-size: 24px;
+  letter-spacing: 3px;
+  margin-bottom: 5px;
+}
+
+.barcode-number {
+  font-family: monospace;
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.ticket-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+/* Receipt styles */
+.receipt {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.receipt h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.receipt-details {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.receipt-details h2,
+.receipt-details h3 {
+  color: #2c3e50;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.receipt-details p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.receipt-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .flight-info, .train-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .from, .to, .duration {
+    margin-bottom: 15px;
+  }
+  
+  .ticket-actions, .receipt-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .back-btn, .new-booking-btn {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+@media print {
+  .tabs, .ticket-actions, .receipt-actions {
+    display: none;
+  }
+  
+  .ticket, .receipt {
+    box-shadow: none;
+    padding: 0;
+  }
+  
+  .ticket-details, .receipt-details {
+    border: none;
+    padding: 0;
+  }
+}
