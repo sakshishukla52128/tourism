@@ -69,6 +69,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  
 }
 
 .submit-btn:hover {
@@ -183,18 +184,4 @@
 
 .success-message p {
   margin-bottom: 0.5rem;
-}
-/* Add to your existing Contact.css */
-.spinner {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid rgba(255,255,255,.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
