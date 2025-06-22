@@ -5,6 +5,113 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+@media screen and (max-width: 768px) {
+  /* Extra small devices (phones, 320px and up) */
+  @media screen and (min-width: 320px) {
+    .booking-container {
+      padding: 8px;
+    }
+    .booking-header h1 {
+      font-size: 20px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      font-size: 14px;
+      padding: 8px;
+    }
+  }
+  
+  /* Small devices (large phones, 375px and up) */
+  @media screen and (min-width: 375px) {
+    .booking-container {
+      padding: 10px;
+    }
+    .booking-header h1 {
+      font-size: 22px;
+    }
+  }
+  
+  /* Medium devices (tablets, 768px and up) */
+  @media screen and (min-width: 768px) {
+    .booking-container {
+      padding: 15px;
+    }
+    .booking-header h1 {
+      font-size: 24px;
+    }
+    .progress-bar {
+      flex-direction: row;
+    }
+    .flight-option,
+    .hotel-option,
+    .car-option,
+    .train-option {
+      flex-direction: row;
+    }
+  }
+  
+  /* Large devices (desktops, 1024px and up) */
+  @media screen and (min-width: 1024px) {
+    .booking-container {
+      padding: 20px;
+      max-width: 1000px;
+    }
+    .booking-header h1 {
+      font-size: 28px;
+    }
+  }
+  
+  /* Base styles for all screen sizes */
+  .booking-container {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  .progress-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px;
+  }
+  
+  .progress-bar::before {
+    left: 15px;
+    width: 4px;
+    height: 100%;
+    top: 0;
+  }
+  
+  .progress-step {
+    flex-direction: row;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .flight-option,
+  .hotel-option,
+  .car-option,
+  .train-option {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .barcode {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
 .booking-header {
   text-align: center;
   margin-bottom: 30px;
@@ -17,9 +124,14 @@
 
 .progress-bar {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+  padding: 0;
   position: relative;
+  width: 80%;
+  max-width: 600px;
 }
 
 .progress-bar::before {
@@ -39,6 +151,7 @@
   align-items: center;
   position: relative;
   z-index: 2;
+  flex: 1;
 }
 
 .progress-step span {
@@ -49,20 +162,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   color: #7f8c8d;
   font-weight: bold;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 3px #ecf0f1;
 }
 
 .progress-step.active span {
   background: #3498db;
   color: white;
+  box-shadow: 0 0 0 3px #3498db;
 }
 
 .progress-step p {
   font-size: 14px;
   color: #7f8c8d;
   margin: 0;
+  text-align: center;
 }
 
 .progress-step.active p {
@@ -70,6 +187,15 @@
   font-weight: 500;
 }
 
+@media screen and (max-width: 768px) {
+  .progress-bar {
+    width: 90%;
+  }
+  
+  .progress-step p {
+    font-size: 12px;
+  }
+}
 .booking-step {
   background: white;
   padding: 30px;

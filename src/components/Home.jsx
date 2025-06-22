@@ -237,11 +237,11 @@ const Home = () => {
             </div>
             <p>Making travel dreams come true since 2015. We specialize in creating unforgettable experiences around the globe.</p>
             <div className="social-icons">
-              <FontAwesomeIcon icon={faInstagram} style={{ color: '#E1306C', fontSize: '24px', margin: '8px' }} />
-              <FontAwesomeIcon icon={faTwitter} style={{ color: '#1DA1F2', fontSize: '24px', margin: '8px' }} />
-              <FontAwesomeIcon icon={faFacebook} style={{ color: '#1877F2', fontSize: '24px', margin: '8px' }} />
-              <FontAwesomeIcon icon={faPinterest} style={{ color: '#BD081C', fontSize: '24px', margin: '8px' }} />
-              <FontAwesomeIcon icon={faYoutube} style={{ color: '#FF0000', fontSize: '24px', margin: '8px' }} />
+   <Link to="https://www.instagram.com/"><FontAwesomeIcon icon={faInstagram} style={{ color: '#E1306C', fontSize: '24px', margin: '8px' }} /></Link>
+          <Link to="https://x.com/?lang=en">    <FontAwesomeIcon icon={faTwitter} style={{ color: '#1DA1F2', fontSize: '24px', margin: '8px' }} /></Link>
+       <Link to="https://www.facebook.com/">     <FontAwesomeIcon icon={faFacebook} style={{ color: '#1877F2', fontSize: '24px', margin: '8px' }} /></Link>  
+        <Link to="https://in.pinterest.com/">     <FontAwesomeIcon icon={faPinterest} style={{ color: '#BD081C', fontSize: '24px', margin: '8px' }} /></Link> 
+          <Link to="https://www.youtube.com/">  <FontAwesomeIcon icon={faYoutube} style={{ color: '#FF0000', fontSize: '24px', margin: '8px' }} /></Link>  
             </div>
           </div>
           <div className="footer-section">
