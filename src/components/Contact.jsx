@@ -237,10 +237,7 @@ const Contact = () => {
         
         <div className="map-container">
           <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
+          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d30174.4281707789!2d72.86292479999999!3d19.0283776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1750682118180!5m2!1sen!2sin" style={{height:'800px',width:"800px"}}></iframe>
             <Marker position={position}>
               <Popup>Our Tourism Office</Popup>
             </Marker>
