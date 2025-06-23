@@ -389,6 +389,7 @@ button {
 .submit-btn {
   background: #3498db;
   color: white;
+  padding: 8px 20px;
 }
 
 .next-btn:hover,
