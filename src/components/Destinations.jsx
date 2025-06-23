@@ -3,7 +3,7 @@ import './Destinations.css';
 
 const Destinations = () => {
   // Sample destination data
-  const [destinations, setDestinations] = useState([
+  const [destinations] = useState([
     {
       id: 1,
       name: 'Goa',
