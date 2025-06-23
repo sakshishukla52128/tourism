@@ -512,6 +512,8 @@
     border-radius: 30px 0 0 30px;
     font-size: 1rem;
     outline: none;
+    height: 58px;
+        margin-top: 19px;
   }
   
   .newsletter-form button {
@@ -866,6 +868,8 @@
   font-size: 1rem;
   outline: none;
   margin-right: -67px;
+  height: 58px;
+        margin-top: 19px;
 }
     .nav-links {
       margin-top: 20px;
