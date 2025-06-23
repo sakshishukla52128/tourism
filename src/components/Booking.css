@@ -370,6 +370,10 @@ button {
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s;
+      height: 50px;
+    margin-top: 19px;
+
+  
 }
 
 .prev-btn {

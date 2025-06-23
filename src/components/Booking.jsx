@@ -580,7 +580,7 @@ const Booking = () => {
               </label>
             </div>
             
-            <button type="button" onClick={nextStep} className="next-btn">
+            <button type="button" onClick={nextStep} className="next-btn" style={{width:'25%'}}>
               Next
             </button>
           </div>
@@ -918,10 +918,10 @@ const Booking = () => {
             )}
             
             <div className="navigation-buttons">
-              <button type="button" onClick={prevStep} className="prev-btn">
+              <button type="button" onClick={prevStep} className="prev-btn" style={{width:"40%"}}>
                 Previous
               </button>
-              <button type="button" onClick={nextStep} className="next-btn">
+              <button type="button" onClick={nextStep} className="next-btn" style={{width:"40%"}}>
                 Next
               </button>
             </div>
@@ -1009,10 +1009,10 @@ const Booking = () => {
             </div>
             
             <div className="navigation-buttons">
-              <button type="button" onClick={prevStep} className="prev-btn">
+              <button type="button" onClick={prevStep} className="prev-btn"  style={{width:"35%"}}>
                 Previous
               </button>
-              <button type="submit" className="submit-btn">
+              <button type="submit" className="submit-btn" style={{width:"35%"}}>
                 Confirm Booking
               </button>
             </div>

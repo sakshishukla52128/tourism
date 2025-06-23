@@ -308,7 +308,6 @@ button {
   cursor: pointer;
   font-weight: bold;
   transition: all 0.3s;
-  width: 100%;
 }
 
 .view-details-btn {
