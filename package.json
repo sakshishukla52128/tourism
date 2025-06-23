@@ -1,6 +1,6 @@
 {
   "name": "tourist-vibe",
-   "email": "test@test.com",
+  "email": "test@test.com",
   "subject": "Test",
   "message": "Hello",
   "version": "0.1.0",
@@ -24,6 +24,7 @@
     "jspdf": "^3.0.1",
     "leaflet": "^1.9.4",
     "mongoose": "^8.16.0",
+    "nodemon": "^3.1.10",
     "qrcode.react": "^4.2.0",
     "razorpay": "^2.9.6",
     "react": "^19.1.0",
@@ -77,8 +78,4 @@
   "bugs": {
     "url": "https://github.com/sakshishukla52128/tourism/issues"
   }
-  
-  
- 
-
 }
