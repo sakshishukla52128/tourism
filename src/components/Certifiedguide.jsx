@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Certifiedguide.css';
 
 const Certifiedguide = () => {
-  // Data for 7 guides
+  
   const guides = [
     {
       id: 1,
@@ -266,57 +266,152 @@ const Certifiedguide = () => {
 
   const [selectedGuide, setSelectedGuide] = useState(null);
   const [hiredGuide, setHiredGuide] = useState(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const handleViewDetails = (guide) => {
     setSelectedGuide(guide);
+    setAcceptedTerms(false);
+    window.scrollTo(0, 0); // Scroll to top when viewing details
   };
 
   const handleHire = (guide) => {
+    if (!acceptedTerms) {
+      alert("Please accept the terms and conditions before hiring a guide.");
+      return;
+    }
     setHiredGuide(guide);
-    alert(`You have hired ${guide.name} for ${guide.price},We will call you within 12 hours and take all the details of your trip, where you are planning to go, as soon as possible.`);
+    setTimeout(() => {
+      setHiredGuide(null); // Hide confirmation after 5 seconds
+    }, 5000);
+    alert(`You have hired ${guide.name} for ${guide.price}. We will contact you within 12 hours to finalize your trip details.`);
   };
 
   const handleBackToList = () => {
     setSelectedGuide(null);
   };
 
+  const toggleTermsModal = () => {
+    setShowTermsModal(!showTermsModal);
+  };
+
+  const renderTermsAndConditions = () => (
+    <div className="terms-content">
+      <h3>Terms and Conditions for Hiring a Guide</h3>
+      <ol>
+        <li>
+          <strong>Booking Confirmation:</strong>
+          <ul>
+            <li>Your booking is confirmed only after you receive a confirmation email/call from our team.</li>
+            <li>Full payment details will be shared during confirmation.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Cancellation Policy:</strong>
+          <ul>
+            <li>Cancellations made 48+ hours before: Full refund</li>
+            <li>Cancellations made 24-48 hours before: 50% refund</li>
+            <li>Cancellations made less than 24 hours before: No refund</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Guide Responsibilities:</strong>
+          <ul>
+            <li>Guides will provide services for 8 hours/day as per itinerary</li>
+            <li>Guides are not responsible for personal belongings</li>
+            <li>Guides may refuse service if safety concerns arise</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Payment:</strong>
+          <ul>
+            <li>20% advance required for confirmation</li>
+            <li>Balance to be paid directly to guide on first day</li>
+            <li>Additional expenses (transport, entrance fees etc.) are extra</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Code of Conduct:</strong>
+          <ul>
+            <li>Respect local customs and traditions</li>
+            <li>No illegal activities permitted</li>
+            <li>Guide has right to terminate service for misconduct</li>
+          </ul>
+        </li>
+      </ol>
+      <p>By proceeding, you agree to these terms and conditions.</p>
+    </div>
+  );
+
   return (
     <div className="guide-listing-container">
+      {/* Terms and Conditions Modal */}
+      {showTermsModal && (
+        <div className="terms-modal">
+          <div className="terms-modal-content">
+            <button className="close-modal" onClick={toggleTermsModal}>
+              &times;
+            </button>
+            {renderTermsAndConditions()}
+            <button 
+              className="agree-btn"
+              onClick={() => {
+                setAcceptedTerms(true);
+                toggleTermsModal();
+              }}
+            >
+              I Agree to These Terms
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content */}
       {!selectedGuide ? (
         <>
-          
-          <h1>"Government-Certified Guides - Safe & Insightful Travels"</h1>
+          <header className="guide-header">
+            <h1>Government-Certified Guides - Safe & Insightful Travels</h1>
+            <p className="subtitle">Browse our verified guides with complete transparency</p>
+          </header>
 
           <div className="guides-list">
             {guides.map((guide) => (
               <div key={guide.id} className="guide-card">
-                <div className="guide-image">
-                  <img src={guide.image} alt={guide.name} />
-                </div>
-                <h2>{guide.name}</h2>
-                <p className="short-desc">{guide.shortDesc}</p>
-                
-                <div className="guide-info">
-                  <div>
-                    <span><strong>Experience:</strong> {guide.experience}</span>
-                    <span><strong>Age:</strong> {guide.age}</span>
-                  </div>
-                  <div>
-                    <strong>Languages: </strong>
-                    {guide.languages.join(", ")}
+                <div className="guide-image-container">
+                  <img 
+                    src={guide.image} 
+                    alt={guide.name} 
+                    className="guide-image"
+                    loading="lazy"
+                  />
+                  <div className="experience-badge">
+                    {guide.experience} Experience
                   </div>
                 </div>
                 
-                <div className="price-section">
-                  <strong>{guide.price}</strong>
+                <div className="guide-card-content">
+                  <h2>{guide.name}</h2>
+                  <p className="short-desc">{guide.shortDesc}</p>
+                  
+                  <div className="guide-meta">
+                    <span className="age-lang">
+                      <strong>Age:</strong> {guide.age} | 
+                      <strong> Languages:</strong> {guide.languages.slice(0, 2).join(", ")}
+                      {guide.languages.length > 2 && " + more"}
+                    </span>
+                  </div>
+                  
+                  <div className="price-section">
+                    <strong>{guide.price}</strong>
+                  </div>
+                  
+                  <button 
+                    className="view-details-btn"
+                    onClick={() => handleViewDetails(guide)}
+                  >
+                    VIEW DETAILS
+                  </button>
                 </div>
-                
-                <button 
-                  className="view-details-btn"
-                  onClick={() => handleViewDetails(guide)}
-                >
-                  VIEW DETAILS
-                </button>
               </div>
             ))}
           </div>
@@ -324,64 +419,133 @@ const Certifiedguide = () => {
       ) : (
         <div className="guide-detail-view">
           <button className="back-btn" onClick={handleBackToList}>
-            &larr; Back to Guides
+            &larr; Back to All Guides
           </button>
           
-          <div className="guide-header">
-            <div className="guide-image">
-              <img src={selectedGuide.image} alt={selectedGuide.name} />
-            </div>
-            <div className="guide-basic-info">
-              <h1>{selectedGuide.name}</h1>
-              <p className="address">{selectedGuide.address}</p>
-              <div className="price-section">
-                <strong>{selectedGuide.price}</strong>
-              </div>
-              <button 
-                className="hire-btn"
-                onClick={() => handleHire(selectedGuide)}
-              >
-                HIRE THIS GUIDE
-              </button>
-            </div>
-          </div>
-          
-          <div className="about-section">
-            <h3>About</h3>
-            <p>{selectedGuide.fullDesc}</p>
-          </div>
-          
-          <div className="details-grid">
-            <div className="detail-box">
-              <h4>Personal Details</h4>
-              <p><strong>Email:</strong> {selectedGuide.email}</p>
-              <p><strong>Mobile:</strong> {selectedGuide.mobile}</p>
-              <p><strong>DOB:</strong> {selectedGuide.dob}</p>
-              <p><strong>Gender:</strong> {selectedGuide.gender}</p>
+          <div className="guide-profile-header">
+            <div className="guide-main-image">
+              <img 
+                src={selectedGuide.image} 
+                alt={selectedGuide.name}
+                className="profile-image"
+              />
             </div>
             
-            <div className="detail-box">
-              <h4>Professional Details</h4>
-              <p><strong>Experience:</strong> {selectedGuide.experience}</p>
-              <p><strong>Age:</strong> {selectedGuide.age}</p>
-              <p><strong>Languages:</strong> {selectedGuide.languages.join(", ")}</p>
+            <div className="guide-profile-info">
+              <h1>{selectedGuide.name}</h1>
+              <div className="rating-badge">
+                <span className="stars">★★★★★</span>
+                <span className="rating-text">Certified Guide</span>
+              </div>
+              
+              <div className="price-cta-section">
+                <div className="price-display">
+                  <span className="price">{selectedGuide.price}</span>
+                  <span className="price-note">per day (1-5 people)</span>
+                </div>
+                
+                <div className="action-buttons">
+                  <button 
+                    className="contact-btn"
+                    onClick={() => alert(`Contact ${selectedGuide.name} at ${selectedGuide.mobile}`)}
+                  >
+                    CONTACT GUIDE
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="working-cities">
-            <h3>Working Cities</h3>
-            <div className="cities-grid">
-              {selectedGuide.workingCities.map((city, index) => (
-                <span key={index}>{city}</span>
-              ))}
+          <div className="guide-details-sections">
+            <section className="about-section">
+              <h1>About This Guide</h1>
+              <p>{selectedGuide.fullDesc}</p>
+            </section>
+            
+            <div className="details-columns">
+              <section className="personal-details">
+                <h3>Personal Details</h3>
+                <ul>
+                  <li><strong>Email:</strong> {selectedGuide.email}</li>
+                  <li><strong>Mobile:</strong> {selectedGuide.mobile}</li>
+                  <li><strong>Location:</strong> {selectedGuide.address}</li>
+                  <li><strong>Gender:</strong> {selectedGuide.gender}</li>
+                </ul>
+              </section>
+              
+              <section className="professional-details">
+                <h3>Professional Details</h3>
+                <ul>
+                  <li><strong>Experience:</strong> {selectedGuide.experience}</li>
+                  <li><strong>Age:</strong> {selectedGuide.age}</li>
+                  <li>
+                    <strong>Languages:</strong> 
+                    <div className="language-tags">
+                      {selectedGuide.languages.map((lang, index) => (
+                        <span key={index} className="language-tag">{lang}</span>
+                      ))}
+                    </div>
+                  </li>
+                </ul>
+              </section>
             </div>
+            
+            <section className="working-cities">
+              <h3>Areas of Operation</h3>
+              <div className="cities-grid">
+                {selectedGuide.workingCities.map((city, index) => (
+                  <span key={index} className="city-tag">{city}</span>
+                ))}
+              </div>
+            </section>
+          </div>
+          
+          <div className="booking-section">
+            <div className="terms-acceptance">
+              <label className="terms-checkbox">
+                <input 
+                  type="checkbox" 
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                />
+                <span className="checkmark"></span>
+                I agree to the <span className="terms-link" onClick={toggleTermsModal}>
+                  Terms and Conditions
+                </span>
+              </label>
+            </div>
+            
+            <button 
+              className={`hire-btn ${acceptedTerms ? '' : 'disabled'}`}
+              onClick={() => handleHire(selectedGuide)}
+              disabled={!acceptedTerms}
+            >
+              {acceptedTerms ? (
+                'CONFIRM BOOKING'
+              ) : (
+                'PLEASE ACCEPT TERMS TO BOOK'
+              )}
+            </button>
           </div>
         </div>
       )}
       
+      {/* Booking Confirmation Banner */}
       {hiredGuide && (
-        <div className="confirmation-banner">
-          You have hired {hiredGuide.name} for {hiredGuide.price}
+        <div className="confirmation-banner slide-up">
+          <div className="confirmation-content">
+            <span className="tick-icon">✓</span>
+            <div>
+              <h4>Booking Confirmed!</h4>
+              <p>You have hired {hiredGuide.name} for {hiredGuide.price}</p>
+            </div>
+            <button 
+              className="close-banner"
+              onClick={() => setHiredGuide(null)}
+            >
+              &times;
+            </button>
+          </div>
         </div>
       )}
     </div>
