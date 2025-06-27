@@ -43,7 +43,7 @@ const App = () => {
       <ul className="nav-links">
         <li><Link to="/" className="nav-link">Home</Link></li>
       
-        <li><Link to="/packages" className="nav-link">Packages</Link></li>
+       
         <li><Link to="/booking" className="nav-link">Booking</Link></li>
         <li><Link to="/certifiedguide" className="nav-link">Certified guide</Link></li>
         <li><Link to="/contact" className="nav-link">Contact</Link></li>

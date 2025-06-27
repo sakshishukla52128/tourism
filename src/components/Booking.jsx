@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { QRCodeSVG as QRCode } from 'qrcode.react';
 import './Booking.css';
+
 const Booking = () => {
   // Main form state
   const [formData, setFormData] = useState({
