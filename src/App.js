@@ -50,7 +50,7 @@ const App = () => {
          <li><Link to="/packages" className="nav-link">Refund</Link></li>
         <div className="auth-buttons">
          <Link to="/signup" className="login-btn" >Signup</Link>  <Link to="/login" className="login-btn">Login</Link>
-         
+    
         </div>
       </ul>
     </nav>

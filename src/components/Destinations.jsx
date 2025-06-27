@@ -1,174 +1,201 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Destinations.css';
 
 const Destinations = () => {
-  // Sample destination data
-  const [destinations, setDestinations] = useState([
-    {
-      id: 1,
-      name: 'Goa',
-      country: 'India',
-      image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-      description: 'Famous for its pristine beaches, vibrant nightlife, and Portuguese heritage architecture.',
-      bestTime: 'November to February',
-      attractions: ['Baga Beach', 'Fort Aguada', 'Dudhsagar Falls', 'Anjuna Flea Market'],
-      duration: '3-5 Days',
-      type: 'Beach'
-    },
-    {
-      id: 2,
-      name: 'Manali',
-      country: 'India',
-      image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-      description: 'Nestled in the Himalayas, known for its snow-capped mountains and adventure sports.',
-      bestTime: 'October to June',
-      attractions: ['Rohtang Pass', 'Solang Valley', 'Hadimba Temple', 'Old Manali'],
-      duration: '4-6 Days',
-      type: 'Hill Station'
-    },
-    {
-      id: 3,
-      name: 'Dubai',
-      country: 'UAE',
-      image: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-      description: 'Ultra-modern city with luxury shopping, futuristic architecture and lively nightlife.',
-      bestTime: 'November to March',
-      attractions: ['Burj Khalifa', 'Palm Jumeirah', 'Desert Safari', 'Dubai Mall'],
-      duration: '5-7 Days',
-      type: 'Urban'
-    },
-    {
-      id: 4,
-      name: 'Paris',
-      country: 'France',
-      image: 'https://images.unsplash.com/photo-1503917988258-f87a78e3c995?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-      description: 'The romantic city of lights, famous for its art, fashion, gastronomy and culture.',
-      bestTime: 'April to June, September to November',
-      attractions: ['Eiffel Tower', 'Louvre Museum', 'Notre-Dame Cathedral', 'Champs-Élysées'],
-      duration: '4-7 Days',
-      type: 'Historical'
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const containerRef = useRef(null);
+
+  // Fetch places from Unsplash API
+  const fetchPlaces = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.unsplash.com/search/photos?query=${searchQuery || 'travel'}&page=${page}&per_page=12&client_id=G6ZH4HnzRG3mSCd7WJv09xr-NEQJgVi-fH6CG8qMFIc`
+      );
+      const data = await response.json();
+      
+      const newPlaces = data.results.map(item => ({
+        id: item.id,
+        name: item.alt_description || "Beautiful Destination",
+        image: item.urls.regular,
+        location: item.user.location || "Exotic Location",
+        facilities: generateRandomFacilities(),
+        attractions: generateRandomAttractions(),
+        description: "Experience the beauty of this amazing destination with our exclusive tour packages."
+      }));
+      
+      setPlaces(prev => [...prev, ...newPlaces]);
+    } catch (error) {
+      console.error("Error fetching places:", error);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('All');
-  const [selectedCountry, setSelectedCountry] = useState('All');
+  // Generate random facilities for demo
+  const generateRandomFacilities = () => {
+    const allFacilities = [
+      "Luxury Stay", "Airport Transfer", "Free WiFi", 
+      "Swimming Pool", "Guided Tours", "Breakfast Included",
+      "Spa", "Adventure Activities", "24/7 Support"
+    ];
+    return allFacilities.sort(() => 0.5 - Math.random()).slice(0, 5);
+  };
 
-  // Get unique types and countries for filters
-  const types = ['All', ...new Set(destinations.map(d => d.type))];
-  const countries = ['All', ...new Set(destinations.map(d => d.country))];
+  // Generate random attractions for demo
+  const generateRandomAttractions = () => {
+    const attractions = [
+      "Historical Sites", "Beaches", "Mountain Views",
+      "Local Cuisine", "Wildlife Safari", "Nightlife",
+      "Shopping", "Cultural Shows", "Water Sports"
+    ];
+    return attractions.sort(() => 0.5 - Math.random()).slice(0, 3);
+  };
 
-  // Filter destinations based on search and filters
-  const filteredDestinations = destinations.filter(destination => {
-    const matchesSearch = destination.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         destination.country.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedType === 'All' || destination.type === selectedType;
-    const matchesCountry = selectedCountry === 'All' || destination.country === selectedCountry;
-    
-    return matchesSearch && matchesType && matchesCountry;
-  });
+  // Handle scroll for infinite loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading) {
+          setPage(prev => prev + 1);
+        }
+      },
+      { threshold: 1.0 }
+    );
 
-  return (
-    <div className="destinations-page">
-      <div className="destinations-header">
-        <h1>Explore Destinations</h1>
-        <p>Discover your next adventure</p>
-      </div>
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
-      {/* Search and Filters */}
-      <div className="filters-section">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Search destinations..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <i className="fas fa-search"></i>
-        </div>
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, [loading]);
 
-        <div className="filter-dropdowns">
-          <select 
-            value={selectedType} 
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
-            {types.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+  // Fetch data when page or search changes
+  useEffect(() => {
+    fetchPlaces();
+  }, [page, searchQuery]);
 
-          <select 
-            value={selectedCountry} 
-            onChange={(e) => setSelectedCountry(e.target.value)}
-          >
-            {countries.map(country => (
-              <option key={country} value={country}>{country}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Destination Cards */}
-      <div className="destinations-grid">
-        {filteredDestinations.length > 0 ? (
-          filteredDestinations.map(destination => (
-            <DestinationCard key={destination.id} destination={destination} />
-          ))
-        ) : (
-          <div className="no-results">
-            <h3>No destinations found</h3>
-            <p>Try adjusting your search or filters</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Destination Card Component
-const DestinationCard = ({ destination }) => {
-  const [expanded, setExpanded] = useState(false);
+  // Handle search
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPlaces([]);
+    setPage(1);
+  };
 
   return (
-    <div className={`destination-card ${expanded ? 'expanded' : ''}`}>
-      <div 
-        className="card-image"
-        style={{ backgroundImage: `url(${destination.image})` }}
-      >
-        <div className="card-overlay">
-          <h3>{destination.name}</h3>
-          <p>{destination.country}</p>
-        </div>
-      </div>
+    <div className="explore-now-container">
+      <h1>Discover Your Dream Destination</h1>
       
-      <div className="card-content">
-        <div className="card-meta">
-          <span><i className="fas fa-calendar-alt"></i> {destination.bestTime}</span>
-          <span><i className="fas fa-clock"></i> {destination.duration}</span>
-          <span><i className="fas fa-tag"></i> {destination.type}</span>
-        </div>
-        
-        <p className="description">{destination.description}</p>
-        
-        {expanded && (
-          <div className="expanded-content">
-            <h4>Top Attractions:</h4>
-            <ul>
-              {destination.attractions.map((attraction, index) => (
-                <li key={index}>{attraction}</li>
-              ))}
-            </ul>
+      {/* Search Bar */}
+      <form onSubmit={handleSearch} className="search-bar">
+        <input
+          type="text"
+          placeholder="Search places (e.g., Paris, Beach, Mountain...)"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button type="submit">Search</button>
+      </form>
+
+      {/* Places Grid */}
+      <div className="places-grid">
+        {places.map((place) => (
+          <div key={place.id} className="place-card">
+            <img 
+              src={place.image} 
+              alt={place.name} 
+              onClick={() => setSelectedPlace(place)}
+            />
+            <div className="place-info">
+              <h3>{place.name}</h3>
+              <p className="location">📍 {place.location}</p>
+              <button 
+                className="view-details-btn"
+                onClick={() => setSelectedPlace(place)}
+              >
+                View Details
+              </button>
+            </div>
           </div>
-        )}
-        
-        <button 
-          className="toggle-btn"
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded ? 'Show Less' : 'Explore More'}
-        </button>
+        ))}
       </div>
-      
+
+      {/* Loading Indicator */}
+      {loading && <div className="loading">Loading more destinations...</div>}
+      <div ref={containerRef} style={{ height: '10px' }}></div>
+
+      {/* Details Modal */}
+      {selectedPlace && (
+        <div className="modal-overlay">
+          <div className="place-modal">
+            <button 
+              className="close-modal"
+              onClick={() => setSelectedPlace(null)}
+            >
+              &times;
+            </button>
+            
+            <img src={selectedPlace.image} alt={selectedPlace.name} />
+            
+            <div className="modal-content">
+              <h2>{selectedPlace.name}</h2>
+              <p className="location">📍 {selectedPlace.location}</p>
+              
+              <div className="details-section">
+                <h3>About This Place</h3>
+                <p>{selectedPlace.description}</p>
+              </div>
+              
+              <div className="details-section">
+                <h3>Facilities</h3>
+                <ul>
+                  {selectedPlace.facilities.map((facility, i) => (
+                    <li key={i}>✓ {facility}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="details-section">
+                <h3>Main Attractions</h3>
+                <ul>
+                  {selectedPlace.attractions.map((attraction, i) => (
+                    <li key={i}>🌟 {attraction}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="modal-actions">
+                <a 
+                  href="#contact" 
+                  className="nav-link"
+                >
+        <a href="Contact">   <button className="book-now-btn">
+                    Contact to Enquiry
+                  </button>  </a> 
+                </a>
+                <a
+                  href={`https://wa.me/91YOUR_NUMBER?text=Hi! I'm interested in ${selectedPlace.name} package`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                 <a href="Booking"> <button className="whatsapp-btn">
+                   Booking Now
+                  </button></a>
+             
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
