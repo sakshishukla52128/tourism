@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -9,80 +9,115 @@ const Login = () => {
     password: ''
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     
+    if (!formData.email || !formData.password) {
+      setError('Please enter both email and password');
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      setLoading(true);
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email: formData.email,
         password: formData.password
       });
       
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userId', response.data.userId);
-      localStorage.setItem('username', response.data.username);
-      navigate('/');
+      if (response.data.success) {
+        localStorage.setItem('token', response.data.token);
+        navigate('/tourism');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form-wrapper">
-        <h2>Welcome Back</h2>
-        <p>Log in to access your travel account</p>
-        
+    <div className="auth-container login-page">
+      <div className="auth-form">
+        <div className="form-header">
+          <h2>Welcome Back, Explorer</h2>
+          <p>Sign in to continue your journey</p>
+        </div>
+
         {error && <div className="error-message">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
             <input
               type="email"
-              id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder="Email Address"
               required
-              placeholder="Enter your email"
             />
+            <span className="input-icon">✉️</span>
           </div>
-          
+
           <div className="form-group">
-            <label htmlFor="password">Password</label>
             <input
-              type="password"
-              id="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
+              placeholder="Password"
               required
-              placeholder="Enter your password"
             />
+            <span 
+              className="input-icon password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? '👁️' : '👁️‍🗨️'}
+            </span>
           </div>
-          
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Logging in...' : 'Log In'}
+
+          <div className="form-options">
+            <label className="remember-me">
+              <input type="checkbox" />
+              <span>Remember me</span>
+            </label>
+            <Link to="/forgot-password" className="forgot-password"></Link>
+          </div>
+
+          <button 
+            type="submit" 
+            className="submit-btn"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner"></span> Signing In...
+              </>
+            ) : (
+              'Login to Your Account'
+            )}
           </button>
         </form>
-        
+
         <div className="auth-footer">
-          Don't have an account? <a href="/signup">Sign up</a>
+          <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
+          <div className="social-login">
+            <p>Or login with:</p>
+            
+          </div>
         </div>
       </div>
     </div>
