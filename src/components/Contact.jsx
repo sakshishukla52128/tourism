@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
@@ -22,9 +22,34 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const [userLocation, setUserLocation] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [locationError, setLocationError] = useState('');
+
+  // Get user's current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setLocationError('Could not get your location. Please enable location services.');
+          // Default to New Delhi if location access is denied
+          setUserLocation({ lat: 28.6139, lng: 77.2090 });
+        }
+      );
+    } else {
+      setLocationError('Geolocation is not supported by your browser.');
+      setUserLocation({ lat: 28.6139, lng: 77.2090 });
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,13 +77,16 @@ const Contact = () => {
       setError('Message is required');
       return false;
     }
+    if (!userLocation) {
+      setError('Please allow location access to submit the form');
+      return false;
+    }
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate form first
     if (!validateForm()) {
       return;
     }
@@ -67,16 +95,14 @@ const Contact = () => {
     setError('');
     
     try {
-      // Check if backend is running
-      console.log('Attempting to submit form data:', formData);
-      
-      const response = await axios.post('http://localhost:5000/api/contact', formData, {
+      const response = await axios.post('http://localhost:5000/api/contact', {
+        ...formData,
+        coordinates: [userLocation.lng, userLocation.lat] // GeoJSON uses [longitude, latitude]
+      }, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
-      console.log('Server response:', response.data);
       
       if (response.status === 201) {
         setSubmitted(true);
@@ -87,26 +113,14 @@ const Contact = () => {
           subject: '',
           message: ''
         });
-      } else {
-        throw new Error('Unexpected response from server');
       }
     } catch (error) {
-      console.error('Full error details:', error);
-      
       let errorMessage = 'Failed to send message. Please try again later.';
       
       if (error.response) {
-        // The request was made and the server responded with a status code
-        console.error('Server responded with error:', error.response.data);
         errorMessage = error.response.data.error || `Server error: ${error.response.status}`;
       } else if (error.request) {
-        // The request was made but no response was received
-        console.error('No response received:', error.request);
-        errorMessage = 'Server is not responding. Please check your connection or try again later.';
-      } else {
-        // Something happened in setting up the request
-        console.error('Request setup error:', error.message);
-        errorMessage = 'Network error. Please check your internet connection.';
+        errorMessage = 'Server is not responding. Please check your connection.';
       }
       
       setError(errorMessage);
@@ -114,9 +128,6 @@ const Contact = () => {
       setIsLoading(false);
     }
   };
-
-  // Default coordinates for the map
-  const position = [28.6139, 77.2090]; // New Delhi coordinates
 
   return (
     <div className="contact-container">
@@ -197,6 +208,13 @@ const Contact = () => {
                   ></textarea>
                 </div>
                 
+                {locationError && (
+                  <div className="location-warning">
+                    <p>{locationError}</p>
+                    <p>Using default location for map display.</p>
+                  </div>
+                )}
+                
                 {error && <div className="error-message">{error}</div>}
                 
                 <button 
@@ -236,12 +254,21 @@ const Contact = () => {
         </div>
         
         <div className="map-container">
-          <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
-          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d30174.4281707789!2d72.86292479999999!3d19.0283776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1750682118180!5m2!1sen!2sin" style={{height:'800px',width:"800px"}}></iframe>
-            <Marker position={position}>
-              <Popup>Our Tourism Office</Popup>
-            </Marker>
-          </MapContainer>
+          {userLocation && (
+            <MapContainer 
+              center={[userLocation.lat, userLocation.lng]} 
+              zoom={13} 
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={[userLocation.lat, userLocation.lng]}>
+                <Popup>Your Current Location</Popup>
+              </Marker>
+            </MapContainer>
+          )}
         </div>
       </div>
     </div>

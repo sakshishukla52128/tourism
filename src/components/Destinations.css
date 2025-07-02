@@ -22,7 +22,7 @@ h1 {
   display: flex;
   
   max-width: 600px;
-  margin: 10 auto 3rem;
+  margin: 13 auto 3rem;
   box-shadow: 1 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 30px;
   overflow: hidden;
