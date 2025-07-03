@@ -559,3 +559,124 @@ button.processing {
     padding: 1rem;
   }
 }
+/* Travel Support Section */
+.travel-support-section {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.travel-support-section h2 {
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.support-cards-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.support-card {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.support-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.support-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.support-card-icon.emergency {
+  background-color: #ef4444;
+}
+
+.support-card-icon.general {
+  background-color: #3b82f6;
+}
+
+.support-card-icon.safety {
+  background-color: #10b981;
+}
+
+.support-card-icon.accommodation {
+  background-color: #f59e0b;
+}
+
+.support-card h3 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.support-card p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+}
+
+.support-contact {
+  font-size: 0.9rem;
+  color: #1e40af;
+}
+
+.support-faq {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.support-faq h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.faq-item {
+  margin-bottom: 1rem;
+}
+
+.faq-item h4 {
+  color: #334155;
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+
+.faq-item p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .support-cards-container {
+    grid-template-columns: 1fr;
+  }
+}

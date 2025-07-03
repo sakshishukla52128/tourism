@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaCheckCircle, FaClock, FaMoneyBillWave, FaReceipt, FaMapMarkerAlt, FaCalendarAlt, FaPhone, FaInfoCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaClock, FaMoneyBillWave, FaReceipt, FaMapMarkerAlt, FaCalendarAlt, FaPhone, FaInfoCircle, FaHeadset, FaQuestionCircle, FaShieldAlt, FaHotel } from 'react-icons/fa';
 import './Package.css';
 
 // API base URL - change this in production
@@ -8,7 +8,6 @@ const API_BASE_URL = 'http://localhost:5000';
 
 const Packages = () => {
   const [bookings, setBookings] = useState([]);
-  const [refunds, setRefunds] = useState([]);
   const [callRequests, setCallRequests] = useState([]);
   const [cancellationReason, setCancellationReason] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -22,32 +21,31 @@ const Packages = () => {
     // Fetch mock bookings (replace with actual API call)
     const mockBookings = [
       {
-        id: 'pay_QIPAz3IZe9bpxj',
+        id: 'pay_Qk7QS0uQppDDfC',
         date: '2023-06-25T16:31:00',
-        amount: 5600,
+        amount: 33000,
         status: 'authorized',
         destination: 'Goa Beach Resort',
         tripDate: '2023-07-15',
         travelers: 2,
         receiptUrl: '#',
-        phone: '+91 9999 999999',
+        
         email: 'customer@example.com'
       },
       {
-        id: 'pay_2KJHs83kLmNopq',
+        id: 'pay_Qk6TcDoKDBYt9D',
         date: '2023-06-28T10:15:00',
-        amount: 7200,
+        amount: 71500,
         status: 'authorized',
         destination: 'Himalayan Trek',
         tripDate: '2023-08-10',
         travelers: 4,
         receiptUrl: '#',
-        phone: '+91 8888 888888',
+       
         email: 'user@example.com'
       }
     ];
     setBookings(mockBookings);
-    setRefunds([]);
 
     // Fetch call requests from MongoDB
     const fetchCallRequests = async () => {
@@ -320,38 +318,71 @@ const Packages = () => {
           )}
         </div>
 
-        {/* Refund History */}
-        <div className="history-section">
-          <h2>Refund History</h2>
-          {refunds.length > 0 ? (
-            <table className="history-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Destination</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {refunds.map(refund => {
-                  const booking = bookings.find(b => b.id === refund.paymentId);
-                  return (
-                    <tr key={refund.id}>
-                      <td>{formatDate(refund.date)}</td>
-                      <td>{booking?.destination || 'N/A'}</td>
-                      <td>₹{refund.amount.toLocaleString('en-IN')}</td>
-                      <td className={`status ${refund.status}`}>
-                        {refund.status.charAt(0).toUpperCase() + refund.status.slice(1)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <p className="no-history">No refunds processed yet</p>
-          )}
+        {/* Travel Support Section */}
+        <div className="travel-support-section">
+          <h2><FaHeadset /> Travel Support</h2>
+          
+          <div className="support-cards-container">
+            <div className="support-card">
+              <div className="support-card-icon emergency">
+                <FaPhone />
+              </div>
+              <h3>Emergency Support</h3>
+              <p>24/7 assistance for urgent travel issues</p>
+              <div className="support-contact">
+                <strong>+91 77159 52128</strong>
+              </div>
+            </div>
+            
+            <div className="support-card">
+              <div className="support-card-icon general">
+                <FaQuestionCircle />
+              </div>
+              <h3>General Inquiries</h3>
+              <p>Questions about your trip or bookings</p>
+              <div className="support-contact">
+                <strong>support@travelcompany.com</strong>
+              </div>
+            </div>
+            
+            <div className="support-card">
+              <div className="support-card-icon safety">
+                <FaShieldAlt />
+              </div>
+              <h3>Safety Assistance</h3>
+              <p>Report safety concerns during your trip</p>
+              <div className="support-contact">
+                <strong>safety@travelcompany.com</strong>
+              </div>
+            </div>
+            
+            <div className="support-card">
+              <div className="support-card-icon accommodation">
+                <FaHotel />
+              </div>
+              <h3>Accommodation Help</h3>
+              <p>Issues with hotels or stays</p>
+              <div className="support-contact">
+                <strong>hotels@travelcompany.com</strong>
+              </div>
+            </div>
+          </div>
+          
+          <div className="support-faq">
+            <h3><FaInfoCircle /> Frequently Asked Questions</h3>
+            <div className="faq-item">
+              <h4>How long does refund processing take?</h4>
+              <p>Refunds are typically processed within 5-7 business days after approval.</p>
+            </div>
+            <div className="faq-item">
+              <h4>Can I change my trip dates instead of cancelling?</h4>
+              <p>Yes, in many cases we can help reschedule your trip with minimal fees.</p>
+            </div>
+            <div className="faq-item">
+              <h4>What if I need to cancel due to an emergency?</h4>
+              <p>Contact our emergency support line for expedited assistance.</p>
+            </div>
+          </div>
         </div>
       </div>
 
