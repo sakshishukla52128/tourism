@@ -1,15 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import image from './assets/logo.png'
+import image from './assets/logo.png';
 import { 
   faHome, 
   faUser, 
   faEnvelope,
   faPhone, 
-  faMapMarkerAlt 
+  faMapMarkerAlt,
+  faBars,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { 
   faInstagram, 
@@ -25,53 +25,137 @@ import Contact from './components/Contact';
 import Packages from './components/Packages';
 import Signup from './components/Signup';
 import Login from './components/Login';
-
-
 import Home from './components/Home';
 import Certifiedguide from './components/Certifiedguide';
+import './App.css';
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    window.location.href = '/';
+  };
+
   return (
     <Router>
-        <nav className="navbar">
-   
-      <div className="logo">
-     
-             <img src={image} alt="TripVibe Logo" style={{ height: '52px', marginLeft: '-30px', width:'60px' }} />
-        <span className="logo-text">TripVibe</span>
-      </div>
-      
-      <ul className="nav-links">
-        <li><Link to="/" className="nav-link">Home</Link></li>
-      
-       
-        <li><Link to="/booking" className="nav-link">Booking</Link></li>
-        <li><Link to="/certifiedguide" className="nav-link">Certified guide</Link></li>
-        <li><Link to="/contact" className="nav-link">Contact</Link></li>
-         <li><Link to="/packages" className="nav-link">Refund</Link></li>
-        <div className="auth-buttons">
-         <Link to="/signup" className="login-btn" >Signup</Link>  <Link to="/login" className="login-btn">Login</Link>
-    
-        </div>
-      </ul>
-    </nav>
+      <Navbar isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
       <div className="App">
-     
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/packages" element={<Packages />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/certifiedguide" element={<Certifiedguide />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/tourism" element={<Home />} />
+          <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/tourism" element={<Home isAuthenticated={isAuthenticated} />} />
         </Routes>
-        
       </div>
     </Router>
-   
+  );
+};
+
+const Navbar = ({ isAuthenticated, handleLogout }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <nav className="navbar">
+      <div className="logo-container">
+        <img src={image} alt="TripVibe Logo" className="logo-img" />
+        <span className="logo-text">TripVibe</span>
+      </div>
+      
+      {/* Mobile menu toggle button */}
+      <div className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+        <FontAwesomeIcon 
+          icon={isMobileMenuOpen ? faTimes : faBars} 
+          className="menu-icon"
+        />
+      </div>
+      
+      {/* Navigation links */}
+      <ul className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
+        <li>
+          <Link to="/" className="nav-link" onClick={closeMobileMenu}>
+            <FontAwesomeIcon icon={faHome} className="nav-icon" />
+            Home
+          </Link>
+        </li>
+        
+        {isAuthenticated ? (
+          <>
+            <li>
+              <Link to="/booking" className="nav-link" onClick={closeMobileMenu}>
+                <FontAwesomeIcon icon={faUser} className="nav-icon" />
+                Booking
+              </Link>
+            </li>
+            <li>
+              <Link to="/certifiedguide" className="nav-link" onClick={closeMobileMenu}>
+                Certified Guide
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="nav-link" onClick={closeMobileMenu}>
+                <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link to="/packages" className="nav-link" onClick={closeMobileMenu}>
+                Refund
+              </Link>
+            </li>
+            <div className="auth-buttons">
+              <button 
+                onClick={() => {
+                  handleLogout();
+                  closeMobileMenu();
+                }} 
+                className="logout-btn"
+              >
+                Logout
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="auth-buttons">
+            <Link 
+              to="/signup" 
+              className="signup-btn" 
+              onClick={closeMobileMenu}
+            >
+              Sign Up
+            </Link>
+            <Link 
+              to="/login" 
+              className="login-btn" 
+              onClick={closeMobileMenu}
+            >
+              Login
+            </Link>
+          </div>
+        )}
+      </ul>
+    </nav>
   );
 };
 

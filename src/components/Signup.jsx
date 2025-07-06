@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Signup.css';
 
-const Signup = () => {
+const Signup = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -56,8 +56,10 @@ const Signup = () => {
       
       if (response.data.success) {
         setSuccess(true);
+        localStorage.setItem('token', response.data.token);
+        setIsAuthenticated(true);
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 1500);
       }
     } catch (err) {
@@ -82,7 +84,7 @@ const Signup = () => {
               <path className="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
             </svg>
             <h3>Registration Successful!</h3>
-            <p>Redirecting to login page...</p>
+            <p>Redirecting to home page...</p>
           </div>
         ) : (
           <>
@@ -156,7 +158,6 @@ const Signup = () => {
               <p>Already have an account? <Link to="/login">Login here</Link></p>
               <div className="social-signup">
                 <p>Or sign up with:</p>
-                
               </div>
             </div>
           </>

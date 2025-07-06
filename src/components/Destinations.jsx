@@ -293,9 +293,7 @@ const Destinations = () => {
                 <button className="contact-btn" onClick={() => window.location.href = 'Contact'}>
                   Contact to Enquiry
                 </button>
-                <button className="book-now-btn" onClick={() => window.location.href = 'Booking'}>
-                  Booking Now
-                </button>
+              
               </div>
             </div>
 

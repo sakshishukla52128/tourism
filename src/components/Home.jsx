@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './Home.css';
-
-
-import { Routes, Route } from 'react-router-dom';
 import { 
   faInstagram, 
   faTwitter, 
@@ -15,45 +11,51 @@ import {
   faGooglePlay
 } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faPhone, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import './Home.css';
 
-
-const Home = () => {
+const Home = ({ isAuthenticated }) => {
   return (
     <div className="home-page">
-     
-      
       {/* Curved Header Section */}
       <header className="header" style={{ backgroundImage: "url('https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4')" }}>
-      
         <div className="overlay-bg"></div>
         <div className="curve"></div>
-          <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          zIndex: '-1',
-        }}
-      >
-        <source src='https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4' type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: '-1',
+          }}
+        >
+          <source src='https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4' type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         <div className="hero">
           <h1>Discover Your Dream Vacation</h1>
-          <p style={{fontSize:'35px',color:'orange'}}>Explore the world's most beautiful places with our expert guides</p>
+          <p style={{fontSize:'35px',color:'orange'}}>
+            {isAuthenticated 
+              ? "Welcome back! Ready for your next adventure?" 
+              : "Explore the world's most beautiful places with our expert guides"}
+          </p>
           
-            
-   <Link to="/destinations" className="cta-button">Explore Now</Link>
+          {isAuthenticated ? (
+            <Link to="/Destinations" className="cta-button">ExploreNow</Link>
+          ) : (
+            <div className="auth-buttons">
+              <Link to="/Destinations" className="cta-button secondary" style={{mergin:'30px' }} >ExploreNow</Link>
+         
+            </div>
+          )}
           
           <div className="hero-stats">
             <div className="stat-item">
               <h3> Happy Travelers:</h3> <div className="stat-number">10K+</div>
-              <div className="stat-label"></div>
             </div>
             <div className="stat-item">
               <h3> Destinations:</h3><div className="stat-number">500+</div>
@@ -70,7 +72,11 @@ const Home = () => {
         {/* Popular Destinations */}
         <section className="featured-destinations">
           <h2>Popular Destinations</h2>
-          <p className="section-subtitle">Explore our most booked destinations this season</p>
+          <p className="section-subtitle">
+            {isAuthenticated 
+              ? "Your next adventure awaits!" 
+              : "Explore our most booked destinations this season"}
+          </p>
           <div className="destination-grid">
             {[
               { name: "Paris, France", price: "$899", duration: "7 Days, 6 Nights", rating: "★★★★★ (24)", image: "https://images.unsplash.com/photo-1503917988258-f87a78e3c995?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" },
@@ -87,11 +93,13 @@ const Home = () => {
                 <div className="card-details">
                   <p>{destination.duration}</p>
                   <div className="rating">{destination.rating}</div>
+                  {isAuthenticated && (
+                    <Link to="/booking" className="book-now-btn">Book Now</Link>
+                  )}
                 </div>
               </div>
             ))}
           </div>
-          
         </section>
 
         {/* Why Choose Us */}
@@ -106,7 +114,15 @@ const Home = () => {
                   <li key={i}>✓ {item}</li>
                 ))}
             </ul>
-          
+            {!isAuthenticated && (
+              <div className="auth-promo">
+                <p>Join our community of travelers today!</p>
+                <div className="auth-buttons">
+                  <Link to="/signup" className="secondary-button">Sign Up</Link>
+                  <Link to="/login" className="primary-button">Login</Link>
+                </div>
+              </div>
+            )}
           </div>
           <div className="about-image">
             <div className="image-grid">
@@ -151,18 +167,20 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Newsletter */}
-        <section className="newsletter">
-          <div className="newsletter-content">
-            <h2>Get Travel Deals & Updates</h2>
-            <p>Subscribe to our newsletter and get exclusive offers and travel inspiration</p>
-            <div className="newsletter-form">
-              <input type="email" placeholder="Your email address" />
-              <button className="primary-button">Subscribe</button>
+        {/* Newsletter - Only show for non-authenticated users */}
+        {!isAuthenticated && (
+          <section className="newsletter">
+            <div className="newsletter-content">
+              <h2>Get Travel Deals & Updates</h2>
+              <p>Subscribe to our newsletter and get exclusive offers and travel inspiration</p>
+              <div className="newsletter-form">
+                <input type="email" placeholder="Your email address" />
+                <button className="primary-button">Subscribe</button>
+              </div>
             </div>
-          </div>
-          <div className="newsletter-image" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')" }}></div>
-        </section>
+            <div className="newsletter-image" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')" }}></div>
+          </section>
+        )}
 
         {/* Travel Tips */}
         <section className="travel-tips">
@@ -198,28 +216,38 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Trending Now */}
+        {/* Trending Now - Show special deals for authenticated users */}
         <section className="trending-now">
-          <h2>Trending Now</h2>
-          <p className="section-subtitle">What travelers are loving this season</p>
+          <h2>{isAuthenticated ? "Exclusive Member Deals" : "Trending Now"}</h2>
+          <p className="section-subtitle">
+            {isAuthenticated 
+              ? "Special offers just for you!" 
+              : "What travelers are loving this season"}
+          </p>
           <div className="trending-grid">
             {[
               {
-                title: "Mountain Retreats", stat: "+120% interest this month",
+                title: isAuthenticated ? "Mountain Retreats (Member Discount)" : "Mountain Retreats", 
+                stat: isAuthenticated ? "30% OFF for members" : "+120% interest this month",
                 image: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1527631746610-bca00a040d60?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')"
               },
               {
-                title: "Culinary Tours", stat: "+85% bookings increase",
+                title: isAuthenticated ? "Culinary Tours (Early Bird)" : "Culinary Tours", 
+                stat: isAuthenticated ? "Book now & save 15%" : "+85% bookings increase",
                 image: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')"
               },
               {
-                title: "Family Cruises", stat: "+65% more families",
+                title: isAuthenticated ? "Family Cruises (Kids Free)" : "Family Cruises", 
+                stat: isAuthenticated ? "Kids under 12 sail free" : "+65% more families",
                 image: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')"
               }
             ].map((trend, index) => (
               <div className="trending-item" key={index} style={{ backgroundImage: trend.image }}>
                 <h3>{trend.title}</h3>
                 <p>{trend.stat}</p>
+                {isAuthenticated && (
+                  <Link to="/booking" className="trending-cta">Book Now</Link>
+                )}
               </div>
             ))}
           </div>
@@ -232,16 +260,15 @@ const Home = () => {
         <div className="footer-content">
           <div className="footer-section about">
             <div className="logo">
-           
-             <span className="logo-icon"></span> TripVibe 
+              <span className="logo-icon"></span> TripVibe 
             </div>
             <p>Making travel dreams come true since 2015. We specialize in creating unforgettable experiences around the globe.</p>
             <div className="social-icons">
-   <Link to="https://www.instagram.com/"><FontAwesomeIcon icon={faInstagram} style={{ color: '#E1306C', fontSize: '24px', margin: '8px' }} /></Link>
-          <Link to="https://x.com/?lang=en">    <FontAwesomeIcon icon={faTwitter} style={{ color: '#1DA1F2', fontSize: '24px', margin: '8px' }} /></Link>
-       <Link to="https://www.facebook.com/">     <FontAwesomeIcon icon={faFacebook} style={{ color: '#1877F2', fontSize: '24px', margin: '8px' }} /></Link>  
-        <Link to="https://in.pinterest.com/">     <FontAwesomeIcon icon={faPinterest} style={{ color: '#BD081C', fontSize: '24px', margin: '8px' }} /></Link> 
-          <Link to="https://www.youtube.com/">  <FontAwesomeIcon icon={faYoutube} style={{ color: '#FF0000', fontSize: '24px', margin: '8px' }} /></Link>  
+              <Link to="https://www.instagram.com/"><FontAwesomeIcon icon={faInstagram} style={{ color: '#E1306C', fontSize: '24px', margin: '8px' }} /></Link>
+              <Link to="https://x.com/?lang=en"><FontAwesomeIcon icon={faTwitter} style={{ color: '#1DA1F2', fontSize: '24px', margin: '8px' }} /></Link>
+              <Link to="https://www.facebook.com/"><FontAwesomeIcon icon={faFacebook} style={{ color: '#1877F2', fontSize: '24px', margin: '8px' }} /></Link>  
+              <Link to="https://in.pinterest.com/"><FontAwesomeIcon icon={faPinterest} style={{ color: '#BD081C', fontSize: '24px', margin: '8px' }} /></Link> 
+              <Link to="https://www.youtube.com/"><FontAwesomeIcon icon={faYoutube} style={{ color: '#FF0000', fontSize: '24px', margin: '8px' }} /></Link>  
             </div>
           </div>
           <div className="footer-section">
@@ -267,24 +294,28 @@ const Home = () => {
                 <FontAwesomeIcon key={i} icon={['fab', method]} style={{ fontSize: '24px', margin: '8px' }} />
               ))}
             </div>
-            <div className="footer-newsletter">
-              <h3>Stay Updated</h3>
-              <input type="email" placeholder="Your email" />
-              <button className="footer-subscribe">Subscribe</button>
-            </div>
-            <div className="app-download">
-              <h3>Download Our App</h3>
-              <div className="app-buttons">
-                <button className="app-store">
-                  <FontAwesomeIcon icon={faApple} />
-                  <span>App Store</span>
-                </button>
-                <button className="play-store">
-                  <FontAwesomeIcon icon={faGooglePlay} />
-                  <span>Play Store</span>
-                </button>
-              </div>
-            </div>
+            {!isAuthenticated && (
+              <>
+                <div className="footer-newsletter">
+                  <h3>Stay Updated</h3>
+                  <input type="email" placeholder="Your email" />
+                  <button className="footer-subscribe">Subscribe</button>
+                </div>
+                <div className="app-download">
+                  <h3>Download Our App</h3>
+                  <div className="app-buttons">
+                    <button className="app-store">
+                      <FontAwesomeIcon icon={faApple} />
+                      <span>App Store</span>
+                    </button>
+                    <button className="play-store">
+                      <FontAwesomeIcon icon={faGooglePlay} />
+                      <span>Play Store</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <div className="footer-section contact">
             <h3>Contact Us</h3>

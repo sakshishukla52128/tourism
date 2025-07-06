@@ -41,7 +41,7 @@
     position: absolute;
     height: 300px; /* Increased from 250px */
     width: 120%;
-    bottom: -25px;
+    bottom: -120px;
     left: 0;
     background: white;
     border-radius: 50% 50% 0 0;
@@ -179,6 +179,12 @@
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
+        margin-left: 500px;
+        border-radius:15px;
+        height:50px;
+        text-align:center;
+        margin-top:5px;
+        
   }
   
   .cta-button:hover {
@@ -836,7 +842,7 @@
       position: absolute;
       height: 300px; /* Increased from 250px */
       width: 120%;
-      bottom: -65px;
+      bottom: -95px;
       left: 0;
       background: white;
       border-radius: 50% 50% 0 0;
@@ -912,6 +918,7 @@
     .hero h1 {
       font-size: 2rem;
       color: white;
+      margin-top: 130px;
     }
     
     .hero p {
@@ -1018,4 +1025,253 @@
       padding: 20px;
     }
   }
+  /* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 5%;
+  position: fixed;
+  top: -20;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #cbb89a, #d4c4a8, #e0d5be);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+  padding: 10px 5%;
+  background: linear-gradient(135deg, #cbb89a, #d4c4a8);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-links li {
+  position: relative;
+  margin: 0 12px;
+}
+
+.nav-links a {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a:hover {
+  color: #1a252f;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links a i {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.login-btn {
+  background: rgba(196, 93, 93, 0.3);
+  color: #2c3e50;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+      margin-bottom: 15px;
+      width:90px;
+      height:50px
+}
+
+.login-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: #1a252f;
+  transform: translateY(-2px);
+}
+
+/* Mobile Menu Button */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: #2c3e50;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 15px 3%;
+  }
   
+  .nav-links li {
+    margin: 0 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 5%;
+  }
+  
+  .menu-toggle {
+    display: flex;
+  }
+  
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: linear-gradient(135deg, #d4c4a8, #e0d5be);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 30px 30px;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+  }
+  
+  .nav-links.active {
+    right: 0;
+  }
+  
+  .nav-links li {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .nav-links a {
+    padding: 12px 15px;
+    width: 100%;
+    font-size: 1.1rem;
+  }
+  
+  .auth-buttons {
+    margin: 20px 0 0;
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .login-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+  }
+  
+  /* Animate menu toggle */
+  .menu-toggle.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+  
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .menu-toggle.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .logo img {
+    height: 35px;
+  }
+  
+}
+/* Update the auth-buttons container */
+.auth-buttons {
+  display: flex;
+  justify-content: center; /* This will center the buttons */
+  gap: 15px; /* Space between buttons */
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Update the cta-button styles */
+.cta-button {
+  background: #f8d56b;
+  color: #333;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 15px;
+  text-align: center;
+  margin: 0 auto; /* This helps with centering */
+  display: block; /* Change from default inline behavior */
+  width:200px;
+  margin-left:537px;
+}
+
+/* Remove the specific margin-left that was pushing it right */
+.cta-button.secondary {
+  margin-right:547px;/* Remove the 500px margin */
+}
+
+/* For mobile responsiveness */
+@media (max-width: 768px) {
+  .auth-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-button {
+    width: 80%;
+    max-width: 250px;
+  }
+}
+
+

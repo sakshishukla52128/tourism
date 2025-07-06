@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -40,7 +40,8 @@ const Login = () => {
       
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
-        navigate('/tourism');
+        setIsAuthenticated(true);
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
@@ -116,7 +117,6 @@ const Login = () => {
           <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
           <div className="social-login">
             <p>Or login with:</p>
-            
           </div>
         </div>
       </div>
