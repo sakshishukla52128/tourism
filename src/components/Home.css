@@ -1253,7 +1253,7 @@
   margin: 0 auto; /* This helps with centering */
   display: block; /* Change from default inline behavior */
   width:200px;
-  margin-left:537px;
+  margin-left:490px;
 }
 
 /* Remove the specific margin-left that was pushing it right */
@@ -1272,6 +1272,21 @@
     width: 80%;
     max-width: 250px;
   }
+  .cta-button {
+  background: #f8d56b;
+  color: #333;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 15px;
+  text-align: center;
+  margin: 0 auto; /* This helps with centering */
+  display: block; /* Change from default inline behavior */
+  width:200px;
+  margin-left:82px;
 }
-
+}
 

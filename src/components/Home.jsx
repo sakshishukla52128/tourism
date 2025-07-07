@@ -44,14 +44,9 @@ const Home = ({ isAuthenticated }) => {
               : "Explore the world's most beautiful places with our expert guides"}
           </p>
           
-          {isAuthenticated ? (
-            <Link to="/Destinations" className="cta-button">ExploreNow</Link>
-          ) : (
-            <div className="auth-buttons">
-              <Link to="/Destinations" className="cta-button secondary" style={{mergin:'30px' }} >ExploreNow</Link>
-         
-            </div>
-          )}
+        <div className="auth-buttons">
+  <Link to="/Destinations" className="cta-button">Explore Now</Link>
+</div>
           
           <div className="hero-stats">
             <div className="stat-item">
