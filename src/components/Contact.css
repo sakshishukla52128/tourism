@@ -9,6 +9,7 @@
   text-align: center;
   margin-bottom: 2rem;
   color: #2c3e50;
+  
 }
 
 .contact-content {
@@ -363,7 +364,7 @@
 /* Tablet and Desktop Styles */
 @media (min-width: 768px) {
   .contact-container {
-    padding: 2rem;
+    padding: 5.7rem;
   }
   
   .contact-content {

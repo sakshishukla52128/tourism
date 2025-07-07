@@ -133,16 +133,19 @@
 }
 
 .back-btn {
-  background: #95a5a6;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  margin: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 84px;
+    cursor: pointer;
+    display: flex
+;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+    margin-bottom: 30px;
 }
 
 .back-btn:hover {

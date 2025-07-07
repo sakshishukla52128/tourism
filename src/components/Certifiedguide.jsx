@@ -4,7 +4,7 @@ import './Certifiedguide.css';
 const Certifiedguide = () => {
   
   const guides = [
-    {
+   {
       id: 1,
       name: "Anoop Adhikary",
       shortDesc: "Namastey! I am a tour guide & facilitator since 35+ years...",
@@ -262,111 +262,22 @@ const Certifiedguide = () => {
       gender: "Male",
       image: "https://www.shutterstock.com/image-photo/happy-middle-aged-50-years-260nw-2423464833.jpg"
     },
+    // ... (keep all your other guide objects exactly as they are)
   ];
 
   const [selectedGuide, setSelectedGuide] = useState(null);
-  const [hiredGuide, setHiredGuide] = useState(null);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const handleViewDetails = (guide) => {
     setSelectedGuide(guide);
-    setAcceptedTerms(false);
     window.scrollTo(0, 0); // Scroll to top when viewing details
-  };
-
-  const handleHire = (guide) => {
-    if (!acceptedTerms) {
-      alert("Please accept the terms and conditions before hiring a guide.");
-      return;
-    }
-    setHiredGuide(guide);
-    setTimeout(() => {
-      setHiredGuide(null); // Hide confirmation after 5 seconds
-    }, 5000);
-    alert(`You have hired ${guide.name} for ${guide.price}. We will contact you within 12 hours to finalize your trip details.`);
   };
 
   const handleBackToList = () => {
     setSelectedGuide(null);
   };
 
-  const toggleTermsModal = () => {
-    setShowTermsModal(!showTermsModal);
-  };
-
-  const renderTermsAndConditions = () => (
-    <div className="terms-content">
-      <h3>Terms and Conditions for Hiring a Guide</h3>
-      <ol>
-        <li>
-          <strong>Booking Confirmation:</strong>
-          <ul>
-            <li>Your booking is confirmed only after you receive a confirmation email/call from our team.</li>
-            <li>Full payment details will be shared during confirmation.</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Cancellation Policy:</strong>
-          <ul>
-            <li>Cancellations made 48+ hours before: Full refund</li>
-            <li>Cancellations made 24-48 hours before: 50% refund</li>
-            <li>Cancellations made less than 24 hours before: No refund</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Guide Responsibilities:</strong>
-          <ul>
-            <li>Guides will provide services for 8 hours/day as per itinerary</li>
-            <li>Guides are not responsible for personal belongings</li>
-            <li>Guides may refuse service if safety concerns arise</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Payment:</strong>
-          <ul>
-            <li>20% advance required for confirmation</li>
-            <li>Balance to be paid directly to guide on first day</li>
-            <li>Additional expenses (transport, entrance fees etc.) are extra</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Code of Conduct:</strong>
-          <ul>
-            <li>Respect local customs and traditions</li>
-            <li>No illegal activities permitted</li>
-            <li>Guide has right to terminate service for misconduct</li>
-          </ul>
-        </li>
-      </ol>
-      <p>By proceeding, you agree to these terms and conditions.</p>
-    </div>
-  );
-
   return (
     <div className="guide-listing-container">
-      {/* Terms and Conditions Modal */}
-      {showTermsModal && (
-        <div className="terms-modal">
-          <div className="terms-modal-content">
-            <button className="close-modal" onClick={toggleTermsModal}>
-              &times;
-            </button>
-            {renderTermsAndConditions()}
-            <button 
-              className="agree-btn"
-              onClick={() => {
-                setAcceptedTerms(true);
-                toggleTermsModal();
-              }}
-            >
-              I Agree to These Terms
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
       {!selectedGuide ? (
         <>
           <header className="guide-header">
@@ -498,53 +409,6 @@ const Certifiedguide = () => {
                 ))}
               </div>
             </section>
-          </div>
-          
-          <div className="booking-section">
-            <div className="terms-acceptance">
-              <label className="terms-checkbox">
-                <input 
-                  type="checkbox" 
-                  checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                />
-                <span className="checkmark"></span>
-                I agree to the <span className="terms-link" onClick={toggleTermsModal}>
-                  Terms and Conditions
-                </span>
-              </label>
-            </div>
-            
-            <button 
-              className={`hire-btn ${acceptedTerms ? '' : 'disabled'}`}
-              onClick={() => handleHire(selectedGuide)}
-              disabled={!acceptedTerms}
-            >
-              {acceptedTerms ? (
-                'CONFIRM BOOKING'
-              ) : (
-                'PLEASE ACCEPT TERMS TO BOOK'
-              )}
-            </button>
-          </div>
-        </div>
-      )}
-      
-      {/* Booking Confirmation Banner */}
-      {hiredGuide && (
-        <div className="confirmation-banner slide-up">
-          <div className="confirmation-content">
-            <span className="tick-icon">✓</span>
-            <div>
-              <h4>Booking Confirmed!</h4>
-              <p>You have hired {hiredGuide.name} for {hiredGuide.price}</p>
-            </div>
-            <button 
-              className="close-banner"
-              onClick={() => setHiredGuide(null)}
-            >
-              &times;
-            </button>
           </div>
         </div>
       )}

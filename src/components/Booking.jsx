@@ -22,7 +22,8 @@ const Booking = () => {
       flight: false,
       hotel: false,
       car: false,
-      train: false
+      train: false,
+      guide: false
     }
   });
 
@@ -578,6 +579,16 @@ const Booking = () => {
                   onChange={handleAddonChange}
                 />
                 Train Booking
+              </label>
+
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  name="guide"
+                  checked={formData.addons.guide}
+                  onChange={handleAddonChange}
+                />
+                Guide Booking
               </label>
             </div>
             

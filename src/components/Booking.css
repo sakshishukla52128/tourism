@@ -119,7 +119,7 @@
 
 .booking-header h1 {
   color: #2c3e50;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .progress-bar {
@@ -521,4 +521,9 @@ button {
   .progress-bar {
     display: none;
   }
+}
+.guide-header p {
+    font-size: 30px;
+    color: #bf2a2a;
+    margin-top: 60px;
 }
