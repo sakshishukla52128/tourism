@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/tourism/static/css/main.1de14b45.css",
-    "main.js": "/tourism/static/js/main.8278e7fa.js",
+    "main.css": "/tourism/static/css/main.9b8c96c8.css",
+    "main.js": "/tourism/static/js/main.e41b0917.js",
     "static/media/logo.png": "/tourism/static/media/logo.8061adb80291bec2d77d.png",
     "index.html": "/tourism/index.html",
-    "main.1de14b45.css.map": "/tourism/static/css/main.1de14b45.css.map",
-    "main.8278e7fa.js.map": "/tourism/static/js/main.8278e7fa.js.map"
+    "main.9b8c96c8.css.map": "/tourism/static/css/main.9b8c96c8.css.map",
+    "main.e41b0917.js.map": "/tourism/static/js/main.e41b0917.js.map"
   },
   "entrypoints": [
-    "static/css/main.1de14b45.css",
-    "static/js/main.8278e7fa.js"
+    "static/css/main.9b8c96c8.css",
+    "static/js/main.e41b0917.js"
   ]
 }
