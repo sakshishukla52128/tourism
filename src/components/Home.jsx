@@ -10,7 +10,16 @@ import {
   faApple,
   faGooglePlay
 } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope, faPhone, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faEnvelope, 
+  faPhone, 
+  faMapMarkerAlt,
+  faMountain,
+  faUmbrellaBeach,
+  faCity,
+  faTree,
+  faUtensils
+} from '@fortawesome/free-solid-svg-icons';
 import './Home.css';
 
 const Home = ({ isAuthenticated }) => {
@@ -44,9 +53,9 @@ const Home = ({ isAuthenticated }) => {
               : "Explore the world's most beautiful places with our expert guides"}
           </p>
           
-        <div className="auth-buttons">
-  <Link to="/Destinations" className="cta-button">Explore Now</Link>
-</div>
+          <div className="auth-buttons">
+            <Link to="/Destinations" className="cta-button">Explore Now</Link>
+          </div>
           
           <div className="hero-stats">
             <div className="stat-item">
@@ -162,20 +171,29 @@ const Home = ({ isAuthenticated }) => {
           </div>
         </section>
 
-        {/* Newsletter - Only show for non-authenticated users */}
-        {!isAuthenticated && (
-          <section className="newsletter">
-            <div className="newsletter-content">
-              <h2>Get Travel Deals & Updates</h2>
-              <p>Subscribe to our newsletter and get exclusive offers and travel inspiration</p>
-              <div className="newsletter-form">
-                <input type="email" placeholder="Your email address" />
-                <button className="primary-button">Subscribe</button>
-              </div>
+        {/* Travel Inspiration Section */}
+        <section className="travel-inspiration">
+          <div className="inspiration-content">
+            <h2>Get Travel Inspired</h2>
+            <p>Discover handpicked travel ideas and hidden gems from our experts</p>
+            <div className="inspiration-types">
+              {[
+                { icon: faMountain, title: "Adventure", desc: "Thrilling experiences" },
+                { icon: faUmbrellaBeach, title: "Beach", desc: "Sun, sand & relaxation" },
+                { icon: faCity, title: "City Breaks", desc: "Urban explorations" },
+                { icon: faTree, title: "Nature", desc: "Wildlife & landscapes" }
+            
+              ].map((type, index) => (
+                <div className="inspiration-type" key={index}>
+                  <FontAwesomeIcon icon={type.icon} className="inspiration-icon" />
+                  <h4>{type.title}</h4>
+                  <p>{type.desc}</p>
+                </div>
+              ))}
             </div>
-            <div className="newsletter-image" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')" }}></div>
-          </section>
-        )}
+          </div>
+          <div className="inspiration-image" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')" }}></div>
+        </section>
 
         {/* Travel Tips */}
         <section className="travel-tips">
