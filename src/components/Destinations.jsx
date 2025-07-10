@@ -280,9 +280,7 @@ const Destinations = () => {
                         <div className="package-best-for">
                           Best for: {pkg.bestFor}
                         </div>
-                     <a href="Booking">  <button className="package-book-btn">
-                          Book Now
-                        </button></a> 
+                     
                       </div>
                     ))}
                   </div>

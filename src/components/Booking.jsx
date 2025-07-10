@@ -402,7 +402,23 @@ const Booking = () => {
       order_id: payment.razorpayOrderId,
       handler: async (response) => {
         try {
-          // Verify payment on your backend in a real app
+          // Verify payment on your backend
+          await axios.post('http://localhost:5000/api/bookings', {
+            ...formData,
+            flightData,
+            hotelData,
+            carData,
+            trainData,
+            payment: {
+              ...payment,
+              status: 'completed',
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature
+            },
+            bookingId: `BOOK-${Math.random().toString(36).substr(2, 8).toUpperCase()}`
+          });
+
           setPayment(prev => ({
             ...prev,
             status: 'completed',
@@ -1167,15 +1183,6 @@ const Booking = () => {
           {payment.razorpayPaymentId && (
             <p>Transaction ID: {payment.razorpayPaymentId}</p>
           )}
-        </div>
-        
-        <div className="payment-qr">
-          <h3>Payment QR Code</h3>
-          <QRCode 
-            value={`upi://pay?pa=yourmerchant@upi&pn=Travel%20Booking&am=${payment.amount}&tn=Booking%20${payment.receipt.bookingId}`} 
-            size={128} 
-          />
-          <p>Scan to pay again</p>
         </div>
         
         <button 

@@ -29,6 +29,7 @@
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "mongoose": "^8.16.1",
     "nodemailer": "^7.0.3",
