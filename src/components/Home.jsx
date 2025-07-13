@@ -301,7 +301,7 @@ const Home = ({ isAuthenticated }) => {
             </ul>
           </div>
           <div className="footer-section middle">
-            <h3>Payment Methods</h3>
+            
             <div className="payment-methods">
               {["cc-visa", "cc-mastercard", "cc-amex", "cc-paypal", "cc-apple-pay"].map((method, i) => (
                 <FontAwesomeIcon key={i} icon={['fab', method]} style={{ fontSize: '24px', margin: '8px' }} />
@@ -330,7 +330,7 @@ const Home = ({ isAuthenticated }) => {
               </>
             )}
           </div>
-          <div className="footer-section contact">
+           <div className="footer-section contact">
             <h3>Contact Us</h3>
             <p><FontAwesomeIcon icon={faEnvelope} /> info@tripvibe.com</p>
             <p><FontAwesomeIcon icon={faPhone} /> +1 (555) 123-4567</p>
