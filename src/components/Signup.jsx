@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Signup.css';
@@ -14,6 +14,27 @@ const Signup = ({ setIsAuthenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          // Default to New Delhi if location access is denied
+          setUserLocation({ lat: 28.6139, lng: 77.2090 });
+        }
+      );
+    } else {
+      setUserLocation({ lat: 28.6139, lng: 77.2090 });
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,7 +72,8 @@ const Signup = ({ setIsAuthenticated }) => {
       const response = await axios.post('http://localhost:5000/api/auth/signup', {
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        location: userLocation
       });
       
       if (response.data.success) {

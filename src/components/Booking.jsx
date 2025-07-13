@@ -82,6 +82,7 @@ const Booking = () => {
   // UI state
   const [currentStep, setCurrentStep] = useState(1);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
 
   // Calculate total amount
   useEffect(() => {
@@ -155,6 +156,26 @@ const Booking = () => {
       fetchTrains();
     }
   }, [trainData.from, trainData.to, trainData.travelDate, trainData.class]);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          // Default to New Delhi if location access is denied
+          setUserLocation({ lat: 28.6139, lng: 77.2090 });
+        }
+      );
+    } else {
+      setUserLocation({ lat: 28.6139, lng: 77.2090 });
+    }
+  }, []);
 
   const fetchWeather = async (city) => {
     try {
@@ -409,6 +430,7 @@ const Booking = () => {
             hotelData,
             carData,
             trainData,
+            location: userLocation, // Add user location here
             payment: {
               ...payment,
               status: 'completed',
