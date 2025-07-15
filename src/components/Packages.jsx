@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaCheckCircle, FaClock, FaMoneyBillWave, FaReceipt, FaMapMarkerAlt, FaCalendarAlt, FaPhone, FaInfoCircle, FaHeadset, FaQuestionCircle, FaShieldAlt, FaHotel } from 'react-icons/fa';
+import { FaCheckCircle, FaClock, FaMoneyBillWave, FaReceipt, FaMapMarkerAlt, FaCalendarAlt, FaPhone, FaInfoCircle, FaHeadset, FaQuestionCircle, FaShieldAlt, FaHotel, FaTimesCircle } from 'react-icons/fa';
 import './Package.css';
 
 // API base URL - change this in production
@@ -13,10 +13,19 @@ const Packages = ({ bookings, cancelBooking }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [validationError, setValidationError] = useState('');
-  const [callRequests, setCallRequests] = useState([]); // Added this line to fix the error
+  const [callRequests, setCallRequests] = useState([]);
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [cancelledTrips, setCancelledTrips] = useState([]);
+  const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' or 'cancelled'
 
-  // Fetch bookings and call requests
+  // Fetch bookings, call requests and cancelled trips
   useEffect(() => {
+    // Filter bookings into upcoming and cancelled
+    const initialUpcoming = bookings.filter(b => b.payment.status !== 'cancelled' && b.payment.status !== 'refunded');
+    const initialCancelled = bookings.filter(b => b.payment.status === 'cancelled' || b.payment.status === 'refunded');
+    setUpcomingBookings(initialUpcoming);
+    setCancelledTrips(initialCancelled);
+
     // Fetch call requests from MongoDB
     const fetchCallRequests = async () => {
       try {
@@ -36,7 +45,7 @@ const Packages = ({ bookings, cancelBooking }) => {
     };
 
     fetchCallRequests();
-  }, []);
+  }, [bookings]);
 
   const handleCallRequest = async () => {
     if (!selectedBooking) return;
@@ -76,6 +85,16 @@ const Packages = ({ bookings, cancelBooking }) => {
       };
       
       setCallRequests([newRequest, ...callRequests]);
+      
+      // Remove from upcoming bookings and add to cancelled trips
+      setUpcomingBookings(prev => prev.filter(booking => booking.bookingId !== selectedBooking.bookingId));
+      setCancelledTrips(prev => [...prev, { 
+        ...selectedBooking, 
+        payment: { ...selectedBooking.payment, status: 'cancelled' },
+        cancelledDate: new Date().toISOString(),
+        refundStatus: 'Processing'
+      }]);
+
       setShowSuccess(true);
       setCancellationReason('');
       setContactNumber('');
@@ -109,39 +128,90 @@ const Packages = ({ bookings, cancelBooking }) => {
       <div className="content-grid">
         {/* Left Column - Booking List */}
         <div className="booking-list-section">
-          <h2><FaCalendarAlt /> Your Upcoming Trips</h2>
+          <div className="tabs">
+            <button 
+              className={`tab-button ${activeTab === 'upcoming' ? 'active' : ''}`}
+              onClick={() => setActiveTab('upcoming')}
+            >
+              Upcoming Trips
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'cancelled' ? 'active' : ''}`}
+              onClick={() => setActiveTab('cancelled')}
+            >
+              Cancelled Trips
+            </button>
+          </div>
           
-          {bookings.length > 0 ? (
-            bookings.map(booking => (
-              <div 
-                key={booking.bookingId} 
-                className={`booking-card ${selectedBooking?.bookingId === booking.bookingId ? 'selected' : ''}`}
-                onClick={() => {
-                  setSelectedBooking(booking);
-                  setContactNumber(booking.travelerInfo.phone);
-                }}
-              >
-                <div className="booking-destination">
-                  <FaMapMarkerAlt /> {booking.destination}
+          {activeTab === 'upcoming' ? (
+            <>
+              <h2><FaCalendarAlt /> Your Upcoming Trips</h2>
+              
+              {upcomingBookings.length > 0 ? (
+                upcomingBookings.map(booking => (
+                  <div 
+                    key={booking.bookingId} 
+                    className={`booking-card ${selectedBooking?.bookingId === booking.bookingId ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSelectedBooking(booking);
+                      setContactNumber(booking.travelerInfo.phone);
+                    }}
+                  >
+                    <div className="booking-destination">
+                      <FaMapMarkerAlt /> {booking.destination}
+                    </div>
+                    <div className="booking-details">
+                      <div><FaCalendarAlt /> {new Date(booking.startDate).toLocaleDateString()}</div>
+                      <div>👥 {booking.travelers} traveler{booking.travelers > 1 ? 's' : ''}</div>
+                      <div>₹{booking.payment.amount.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div className={`booking-status ${booking.payment.status}`}>
+                      {booking.payment.status.charAt(0).toUpperCase() + booking.payment.status.slice(1)}
+                    </div>
+                    <a href={booking.receiptUrl} className="receipt-link">
+                      <FaReceipt /> Receipt
+                    </a>
+                  </div>
+                ))
+              ) : (
+                <div className="no-bookings">
+                  <p>No upcoming trips found</p>
                 </div>
-                <div className="booking-details">
-                  <div><FaCalendarAlt /> {new Date(booking.startDate).toLocaleDateString()}</div>
-                  <div>👥 {booking.travelers} traveler{booking.travelers > 1 ? 's' : ''}</div>
-                  <div>₹{booking.payment.amount.toLocaleString('en-IN')}</div>
-                </div>
-                <div className={`booking-status ${booking.payment.status}`}>
-                  {booking.payment.status.charAt(0).toUpperCase() + booking.payment.status.slice(1)}
-                </div>
-                <a href={booking.receiptUrl} className="receipt-link">
-                  <FaReceipt /> Receipt
-                </a>
-              </div>
-            ))
+              )}
+            </>
           ) : (
-            <div className="no-bookings">
-              <p>No upcoming trips found</p>
-              <button className="secondary-btn">View Past Bookings</button>
-            </div>
+            <>
+              <h2><FaTimesCircle /> Cancelled Trips</h2>
+              
+              {cancelledTrips.length > 0 ? (
+                cancelledTrips.map(trip => (
+                  <div key={trip.id} className="booking-card cancelled">
+                    <div className="booking-destination">
+                      <FaMapMarkerAlt /> {trip.destination}
+                    </div>
+                    <div className="booking-details">
+                      <div><FaCalendarAlt /> {new Date(trip.startDate).toLocaleDateString()}</div>
+                      <div>👥 {trip.travelers} traveler{trip.travelers > 1 ? 's' : ''}</div>
+                      <div>₹{trip.payment.amount.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div className="booking-status cancelled">
+                      Cancelled
+                    </div>
+                    <div className="cancellation-details">
+                      <p><strong>Refund Status:</strong> {trip.refundStatus || 'Processing'}</p>
+                      <p><strong>Cancelled On:</strong> {formatDate(trip.cancelledDate)}</p>
+                      {trip.refundAmount && (
+                        <p><strong>Refund Amount:</strong> ₹{trip.refundAmount.toLocaleString('en-IN')}</p>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-bookings">
+                  <p>No cancelled trips found</p>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -220,7 +290,7 @@ const Packages = ({ bookings, cancelBooking }) => {
               </div>
 
               <button
-                onClick={handleCallRequest}  // Changed from cancelBooking to handleCallRequest
+                onClick={handleCallRequest}
                 disabled={isProcessing}
                 className={isProcessing ? 'processing' : ''}
               >

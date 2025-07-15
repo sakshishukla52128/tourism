@@ -108,6 +108,16 @@
   color: #166534;
 }
 
+.booking-status.pending-cancellation {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.booking-status.cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
 .receipt-link {
   display: inline-flex;
   align-items: center;
@@ -452,6 +462,31 @@ button.processing {
   color: #166534;
 }
 
+.status.cancelled {
+  color: #ef4444;
+}
+
+.cancel-request-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s;
+  width: auto; /* Override global button width */
+}
+
+.cancel-request-btn:hover {
+  background-color: #dc2626;
+}
+
+.cancel-request-btn:disabled {
+  background-color: #fda4af;
+  cursor: not-allowed;
+}
+
 .no-history {
   color: #64748b;
   text-align: center;
@@ -679,4 +714,174 @@ button.processing {
   .support-cards-container {
     grid-template-columns: 1fr;
   }
+}
+/* Add these new styles to your existing CSS file */
+
+/* Tabs for Upcoming/Cancelled Trips */
+.tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  color: #64748b;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  border-radius: 6px 6px 0 0;
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.tab-button:hover {
+  color: #3b82f6;
+  background-color: #f0f7ff;
+}
+
+.tab-button.active {
+  color: #3b82f6;
+  background-color: #f0f7ff;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #3b82f6;
+}
+
+/* Cancelled Trip Cards */
+.booking-card.cancelled {
+  border-left: 4px solid #ef4444;
+  background-color: #fff5f5;
+}
+
+.booking-card.cancelled:hover {
+  background-color: #fee2e2;
+}
+
+.cancellation-details {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.cancellation-details p {
+  margin: 0.3rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.cancellation-details strong {
+  color: #334155;
+  min-width: 100px;
+  display: inline-block;
+}
+
+/* Refund Status Badges */
+.refund-status {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.refund-status.processing {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.refund-status.completed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.refund-status.failed {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Additional Styling for Cancelled Trips Section */
+.no-cancelled-trips {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+}
+
+/* Animation for Cancelled Trip Cards */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.booking-card.cancelled {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .tab-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .cancellation-details p {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .cancellation-details strong {
+    margin-bottom: 0.2rem;
+  }
+}
+
+/* Enhancements for the Cancellation Form Section */
+.no-booking-selected .support-info {
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.no-booking-selected .support-info h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Additional Utility Classes */
+.text-danger {
+  color: #ef4444;
+}
+
+.text-success {
+  color: #10b981;
+}
+
+.text-warning {
+  color: #f59e0b;
+}
+
+.bg-light-danger {
+  background-color: #fff5f5;
+}
+
+/* Smooth transitions for tab switching */
+.booking-list-section {
+  transition: all 0.3s ease;
 }
