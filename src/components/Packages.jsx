@@ -6,47 +6,17 @@ import './Package.css';
 // API base URL - change this in production
 const API_BASE_URL = 'http://localhost:5000';
 
-const Packages = () => {
-  const [bookings, setBookings] = useState([]);
-  const [callRequests, setCallRequests] = useState([]);
+const Packages = ({ bookings, cancelBooking }) => {
   const [cancellationReason, setCancellationReason] = useState('');
   const [contactNumber, setContactNumber] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [validationError, setValidationError] = useState('');
+  const [callRequests, setCallRequests] = useState([]); // Added this line to fix the error
 
   // Fetch bookings and call requests
   useEffect(() => {
-    // Fetch mock bookings (replace with actual API call)
-    const mockBookings = [
-      {
-        id: 'pay_Qk7QS0uQppDDfC',
-        date: '2023-06-25T16:31:00',
-        amount: 33000,
-        status: 'authorized',
-        destination: 'Goa Beach Resort',
-        tripDate: '2023-07-15',
-        travelers: 2,
-        receiptUrl: '#',
-        
-        email: 'customer@example.com'
-      },
-      {
-        id: 'pay_Qk6TcDoKDBYt9D',
-        date: '2023-06-28T10:15:00',
-        amount: 71500,
-        status: 'authorized',
-        destination: 'Himalayan Trek',
-        tripDate: '2023-08-10',
-        travelers: 4,
-        receiptUrl: '#',
-       
-        email: 'user@example.com'
-      }
-    ];
-    setBookings(mockBookings);
-
     // Fetch call requests from MongoDB
     const fetchCallRequests = async () => {
       try {
@@ -144,23 +114,23 @@ const Packages = () => {
           {bookings.length > 0 ? (
             bookings.map(booking => (
               <div 
-                key={booking.id} 
-                className={`booking-card ${selectedBooking?.id === booking.id ? 'selected' : ''}`}
+                key={booking.bookingId} 
+                className={`booking-card ${selectedBooking?.bookingId === booking.bookingId ? 'selected' : ''}`}
                 onClick={() => {
                   setSelectedBooking(booking);
-                  setContactNumber(booking.phone);
+                  setContactNumber(booking.travelerInfo.phone);
                 }}
               >
                 <div className="booking-destination">
                   <FaMapMarkerAlt /> {booking.destination}
                 </div>
                 <div className="booking-details">
-                  <div><FaCalendarAlt /> {new Date(booking.tripDate).toLocaleDateString()}</div>
+                  <div><FaCalendarAlt /> {new Date(booking.startDate).toLocaleDateString()}</div>
                   <div>👥 {booking.travelers} traveler{booking.travelers > 1 ? 's' : ''}</div>
-                  <div>₹{booking.amount.toLocaleString('en-IN')}</div>
+                  <div>₹{booking.payment.amount.toLocaleString('en-IN')}</div>
                 </div>
-                <div className={`booking-status ${booking.status}`}>
-                  {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                <div className={`booking-status ${booking.payment.status}`}>
+                  {booking.payment.status.charAt(0).toUpperCase() + booking.payment.status.slice(1)}
                 </div>
                 <a href={booking.receiptUrl} className="receipt-link">
                   <FaReceipt /> Receipt
@@ -183,9 +153,9 @@ const Packages = () => {
               
               <div className="selected-booking">
                 <h3>{selectedBooking.destination}</h3>
-                <p><FaCalendarAlt /> {new Date(selectedBooking.tripDate).toLocaleDateString()}</p>
-                <p>₹{selectedBooking.amount.toLocaleString('en-IN')}</p>
-                <p className="payment-id">Payment ID: {selectedBooking.id}</p>
+                <p><FaCalendarAlt /> {new Date(selectedBooking.startDate).toLocaleDateString()}</p>
+                <p>₹{selectedBooking.payment.amount.toLocaleString('en-IN')}</p>
+                <p className="payment-id">Payment ID: {selectedBooking.bookingId}</p>
               </div>
 
               <div className="process-steps">
@@ -250,7 +220,7 @@ const Packages = () => {
               </div>
 
               <button
-                onClick={handleCallRequest}
+                onClick={handleCallRequest}  // Changed from cancelBooking to handleCallRequest
                 disabled={isProcessing}
                 className={isProcessing ? 'processing' : ''}
               >

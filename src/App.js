@@ -32,18 +32,33 @@ import './App.css';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
     }
+    const storedBookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    setBookings(storedBookings);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
     window.location.href = '/';
+  };
+
+  const addBooking = (booking) => {
+    const newBookings = [...bookings, booking];
+    setBookings(newBookings);
+    localStorage.setItem('bookings', JSON.stringify(newBookings));
+  };
+
+  const cancelBooking = (bookingId) => {
+    const newBookings = bookings.filter((booking) => booking.bookingId !== bookingId);
+    setBookings(newBookings);
+    localStorage.setItem('bookings', JSON.stringify(newBookings));
   };
 
   return (
@@ -53,8 +68,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
           <Route path="/destinations" element={<Destinations />} />
-          <Route path="/packages" element={<Packages />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/packages" element={<Packages bookings={bookings} cancelBooking={cancelBooking} />} />
+          <Route path="/booking" element={<Booking addBooking={addBooking} />} />
           <Route path="/certifiedguide" element={<Certifiedguide />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />

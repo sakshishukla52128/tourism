@@ -3,7 +3,7 @@ import axios from 'axios';
 import { QRCodeSVG as QRCode } from 'qrcode.react';
 import './Booking.css';
 
-const Booking = () => {
+const Booking = ({ addBooking }) => {
   // Main form state
   const [formData, setFormData] = useState({
     destination: '',
@@ -451,6 +451,24 @@ const Booking = () => {
           
           // Generate receipt
           generateReceipt();
+
+          // Add booking to App state
+          addBooking({
+            ...formData,
+            flightData,
+            hotelData,
+            carData,
+            trainData,
+            location: userLocation,
+            payment: {
+              ...payment,
+              status: 'completed',
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature
+            },
+            bookingId: `BOOK-${Math.random().toString(36).substr(2, 8).toUpperCase()}`
+          });
         } catch (err) {
           console.error(err);
         }
