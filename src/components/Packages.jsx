@@ -68,7 +68,7 @@ const Packages = ({ bookings, cancelBooking }) => {
     
     try {
       const response = await axios.post(`${API_BASE_URL}/api/cancellation-requests`, {
-        paymentId: selectedBooking.id,
+        paymentId: selectedBooking.bookingId,
         destination: selectedBooking.destination,
         contactNumber: contactNumber,
         reason: cancellationReason || "Not specified"
@@ -338,11 +338,11 @@ const Packages = ({ bookings, cancelBooking }) => {
               </thead>
               <tbody>
                 {callRequests.map(request => {
-                  const booking = bookings.find(b => b.id === request.paymentId);
+                  const booking = bookings.find(b => b.bookingId === request.paymentId);
                   return (
                     <tr key={request.id}>
                       <td>{formatDate(request.date)}</td>
-                      <td>{booking?.destination || 'N/A'}</td>
+                      <td>{request.destination || 'N/A'}</td>
                       <td>{request.contactNumber}</td>
                       <td>{request.reason}</td>
                       <td className={`status ${request.status}`}>

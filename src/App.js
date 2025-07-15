@@ -33,6 +33,7 @@ import './App.css';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [bookings, setBookings] = useState([]);
+  const [destinations, setDestinations] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -67,9 +68,9 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
-          <Route path="/destinations" element={<Destinations />} />
+          <Route path="/destinations" element={<Destinations onDestinationsLoad={setDestinations} />} />
           <Route path="/packages" element={<Packages bookings={bookings} cancelBooking={cancelBooking} />} />
-          <Route path="/booking" element={<Booking addBooking={addBooking} />} />
+          <Route path="/booking" element={<Booking addBooking={addBooking} destinations={destinations} />} />
           <Route path="/certifiedguide" element={<Certifiedguide />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './Destinations.css';
 
-const Destinations = () => {
+const Destinations = ({ onDestinationsLoad }) => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -16,7 +16,7 @@ const Destinations = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://api.unsplash.com/search/photos?query=${searchQuery || 'travel'}&page=${page}&per_page=12&client_id=G6ZH4HnzRG3mSCd7WJv09xr-NEQJgVi-fH6CG8qMFIc`
+        `https://api.unsplash.com/search/photos?query=${searchQuery || 'popular travel destinations'}&page=${page}&per_page=12&client_id=G6ZH4HnzRG3mSCd7WJv09xr-NEQJgVi-fH6CG8qMFIc`
       );
       const data = await response.json();
       const newPlaces = data.results.map(item => ({
@@ -105,6 +105,12 @@ const Destinations = () => {
   useEffect(() => {
     fetchPlaces();
   }, [page, searchQuery]);
+
+  useEffect(() => {
+    if (onDestinationsLoad && places.length > 0) {
+      onDestinationsLoad(places);
+    }
+  }, [places, onDestinationsLoad]);
 
   const handleSearch = (e) => {
     e.preventDefault();
