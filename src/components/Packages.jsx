@@ -36,7 +36,8 @@ const Packages = ({ bookings, cancelBooking }) => {
           date: request.createdAt,
           status: request.status,
           reason: request.reason,
-          contactNumber: request.contactNumber
+          contactNumber: request.contactNumber,
+          destination: request.destination // Add destination here
         }));
         setCallRequests(formattedRequests);
       } catch (error) {
@@ -77,11 +78,12 @@ const Packages = ({ bookings, cancelBooking }) => {
       // Create new call request for local state
       const newRequest = {
         id: response.data._id,
-        paymentId: selectedBooking.id,
+        paymentId: selectedBooking.bookingId,
         date: response.data.createdAt,
         status: 'pending',
         reason: cancellationReason || "Not specified",
-        contactNumber: contactNumber
+        contactNumber: contactNumber,
+        destination: selectedBooking.destination // Add destination here
       };
       
       setCallRequests([newRequest, ...callRequests]);
