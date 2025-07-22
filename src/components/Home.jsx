@@ -18,7 +18,7 @@ import {
   faUmbrellaBeach,
   faCity,
   faTree,
-  faUtensils
+ 
 } from '@fortawesome/free-solid-svg-icons';
 import './Home.css';
 
