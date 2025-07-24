@@ -13,28 +13,9 @@ const Signup = ({ setIsAuthenticated }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [step, setStep] = useState(1); // 1 = signup form, 2 = OTP verification
+  const [otp, setOtp] = useState('');
   const navigate = useNavigate();
-  const [userLocation, setUserLocation] = useState(null);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          // Default to New Delhi if location access is denied
-          setUserLocation({ lat: 28.6139, lng: 77.2090 });
-        }
-      );
-    } else {
-      setUserLocation({ lat: 28.6139, lng: 77.2090 });
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,50 +25,101 @@ const Signup = ({ setIsAuthenticated }) => {
     }));
   };
 
+  const handleOtpChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // Only allow numbers
+    setOtp(value);
+  };
+
   const validateForm = () => {
+    setError('');
+    
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('All fields are required');
       return false;
     }
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      setError('Please enter a valid email address');
       return false;
     }
+    
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return false;
     }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return false;
+    }
+    
     return true;
+  };
+
+  const sendOTP = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/send-otp', {
+        email: formData.email
+      });
+      
+      if (response.data.success) {
+        setStep(2);
+      } else {
+        setError(response.data.message || 'Failed to send OTP');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyOTPAndSignup = async () => {
+    setIsLoading(true);
+    try {
+      // First verify OTP
+      const otpResponse = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+        email: formData.email,
+        otp
+      });
+      
+      if (!otpResponse.data.success) {
+        throw new Error(otpResponse.data.message || 'OTP verification failed');
+      }
+      
+      // Then proceed with signup
+      const signupResponse = await axios.post('http://localhost:5000/api/auth/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (signupResponse.data.success) {
+        localStorage.setItem('token', signupResponse.data.token);
+        setIsAuthenticated(true);
+        setSuccess(true);
+        setTimeout(() => navigate('/'), 1500);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        location: userLocation
-      });
-      
-      if (response.data.success) {
-        setSuccess(true);
-        localStorage.setItem('token', response.data.token);
-        setIsAuthenticated(true);
-        setTimeout(() => {
-          navigate('/');
-        }, 1500);
+    if (step === 1) {
+      if (!validateForm()) return;
+      await sendOTP();
+    } else {
+      if (otp.length !== 6) {
+        setError('Please enter a valid 6-digit OTP');
+        return;
       }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+      await verifyOTPAndSignup();
     }
   };
 
@@ -96,7 +128,7 @@ const Signup = ({ setIsAuthenticated }) => {
       <div className="auth-form">
         <div className="form-header">
           <h2>Join Our Travel Community</h2>
-          <p>Create your account to explore amazing destinations</p>
+          <p>{step === 1 ? 'Create your account to explore amazing destinations' : 'Verify your email address'}</p>
         </div>
 
         {success ? (
@@ -113,53 +145,82 @@ const Signup = ({ setIsAuthenticated }) => {
             {error && <div className="error-message">{error}</div>}
             
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Full Name"
-                  required
-                />
-                <span className="input-icon">👤</span>
-              </div>
+              {step === 1 ? (
+                <>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="Full Name"
+                      required
+                    />
+                    <span className="input-icon">👤</span>
+                  </div>
 
-              <div className="form-group">
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email Address"
-                  required
-                />
-                <span className="input-icon">✉️</span>
-              </div>
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Email Address"
+                      required
+                    />
+                    <span className="input-icon">✉️</span>
+                  </div>
 
-              <div className="form-group">
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password (min 6 characters)"
-                  required
-                />
-                <span className="input-icon">🔒</span>
-              </div>
+                  <div className="form-group">
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Password (min 6 characters)"
+                      required
+                    />
+                    <span className="input-icon">🔒</span>
+                  </div>
 
-              <div className="form-group">
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Confirm Password"
-                  required
-                />
-                <span className="input-icon">🔒</span>
-              </div>
+                  <div className="form-group">
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Confirm Password"
+                      required
+                    />
+                    <span className="input-icon">🔒</span>
+                  </div>
+                </>
+              ) : (
+                <div className="otp-container">
+                  <p>We've sent a 6-digit OTP to <strong>{formData.email}</strong></p>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      value={otp}
+                      onChange={handleOtpChange}
+                      placeholder="Enter OTP"
+                      maxLength={6}
+                      required
+                    />
+                    <span className="input-icon">🔢</span>
+                  </div>
+                  <p className="resend-otp">
+                    Didn't receive OTP? <button 
+                      type="button" 
+                      className="resend-btn"
+                      onClick={sendOTP}
+                      disabled={isLoading}
+                    >
+                      Resend
+                    </button>
+                  </p>
+                </div>
+              )}
 
               <button 
                 type="submit" 
@@ -168,20 +229,34 @@ const Signup = ({ setIsAuthenticated }) => {
               >
                 {isLoading ? (
                   <>
-                    <span className="spinner"></span> Creating Account...
+                    <span className="spinner"></span> 
+                    {step === 1 ? 'Sending OTP...' : 'Verifying...'}
                   </>
                 ) : (
-                  'Sign Up Now'
+                  step === 1 ? 'Send OTP' : 'Complete Registration'
                 )}
               </button>
+
+              {step === 2 && (
+                <button 
+                  type="button" 
+                  className="back-btn"
+                  onClick={() => {
+                    setStep(1);
+                    setError('');
+                  }}
+                  disabled={isLoading}
+                >
+                  Back
+                </button>
+              )}
             </form>
 
-            <div className="auth-footer">
-              <p>Already have an account? <Link to="/login">Login here</Link></p>
-              <div className="social-signup">
-                <p>Or sign up with:</p>
+            {step === 1 && (
+              <div className="auth-footer">
+                <p>Already have an account? <Link to="/login">Login here</Link></p>
               </div>
-            </div>
+            )}
           </>
         )}
       </div>

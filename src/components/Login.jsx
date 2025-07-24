@@ -39,8 +39,14 @@ const Login = ({ setIsAuthenticated }) => {
       });
       
       if (response.data.success) {
+        // Store token and user data
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        // Update auth state
         setIsAuthenticated(true);
+        
+        // Redirect to home page
         navigate('/');
       }
     } catch (err) {
@@ -95,7 +101,7 @@ const Login = ({ setIsAuthenticated }) => {
               <input type="checkbox" />
               <span>Remember me</span>
             </label>
-            <Link to="/forgot-password" className="forgot-password"></Link>
+            <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
           </div>
 
           <button 
@@ -115,9 +121,6 @@ const Login = ({ setIsAuthenticated }) => {
 
         <div className="auth-footer">
           <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
-          <div className="social-login">
-            <p>Or login with:</p>
-          </div>
         </div>
       </div>
     </div>
