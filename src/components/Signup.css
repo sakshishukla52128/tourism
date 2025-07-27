@@ -227,3 +227,136 @@
   color: #7f8c8d;
   font-size: 1.1rem;
 }
+/* =====================
+✨ OTP Section Styling
+===================== */
+
+.otp-section {
+  margin-top: 20px;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.otp-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.otp-section input {
+  width: 80%;
+  padding: 14px;
+  margin: 12px 0;
+  font-size: 20px;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: bold;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.otp-section input:focus {
+  border-color: #3498db;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  outline: none;
+}
+
+.otp-section .submit-btn {
+  width: 85%;
+  background: linear-gradient(to right, #3498db, #2ecc71);
+  color: white;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.otp-section .submit-btn:hover {
+  background: linear-gradient(to right, #2980b9, #27ae60);
+  transform: scale(1.03);
+}
+
+/* =====================
+✨ Success Message Styling
+===================== */
+
+.success-message {
+  text-align: center;
+  animation: popUp 0.6s ease-in-out;
+}
+
+.success-message h3 {
+  color: #2e8b57;
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.success-message p {
+  color: #34495e;
+  margin-top: 5px;
+  font-size: 1rem;
+}
+
+/* ✅ Checkmark Animation */
+.checkmark {
+  width: 60px;
+  height: 60px;
+  stroke: #2e8b57;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke-linecap: round;
+  margin: 10px auto;
+  animation: checkmarkDraw 1s ease forwards;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #2e8b57;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #2e8b57;
+  animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.7s forwards;
+}
+
+/* =====================
+✨ Animations
+===================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes stroke {
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes checkmarkDraw {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
