@@ -18,13 +18,11 @@ const Packages = ({ bookings, cancelBooking }) => {
   const [cancelledTrips, setCancelledTrips] = useState([]);
   const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' or 'cancelled'
 
-  // Fetch bookings, call requests and cancelled trips
   useEffect(() => {
-    // Filter bookings into upcoming and cancelled
-    const initialUpcoming = bookings.filter(b => b.payment.status !== 'cancelled' && b.payment.status !== 'refunded');
-    const initialCancelled = bookings.filter(b => b.payment.status === 'cancelled' || b.payment.status === 'refunded');
-    setUpcomingBookings(initialUpcoming);
-    setCancelledTrips(initialCancelled);
+    const upcoming = bookings.filter(b => b.payment.status !== 'cancelled' && b.payment.status !== 'refunded');
+    const cancelled = bookings.filter(b => b.payment.status === 'cancelled' || b.payment.status === 'refunded');
+    setUpcomingBookings(upcoming);
+    setCancelledTrips(cancelled);
 
     // Fetch call requests from MongoDB
     const fetchCallRequests = async () => {
@@ -88,14 +86,8 @@ const Packages = ({ bookings, cancelBooking }) => {
       
       setCallRequests([newRequest, ...callRequests]);
       
-      // Remove from upcoming bookings and add to cancelled trips
-      setUpcomingBookings(prev => prev.filter(booking => booking.bookingId !== selectedBooking.bookingId));
-      setCancelledTrips(prev => [...prev, { 
-        ...selectedBooking, 
-        payment: { ...selectedBooking.payment, status: 'cancelled' },
-        cancelledDate: new Date().toISOString(),
-        refundStatus: 'Processing'
-      }]);
+      // Update the parent component's state
+      cancelBooking(selectedBooking.bookingId);
 
       setShowSuccess(true);
       setCancellationReason('');
@@ -326,7 +318,7 @@ const Packages = ({ bookings, cancelBooking }) => {
       <div className="history-sections">
         {/* Call Request History */}
         <div className="history-section">
-          <h2>Call Request History</h2>
+          <h2>Cancellation Request History</h2>
           {callRequests.length > 0 ? (
             <table className="history-table">
               <thead>
