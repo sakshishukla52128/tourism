@@ -96,13 +96,7 @@ const Login = ({ setIsAuthenticated }) => {
             </span>
           </div>
 
-          <div className="form-options">
-            <label className="remember-me">
-              <input type="checkbox" />
-              <span>Remember me</span>
-            </label>
-            <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
-          </div>
+        
 
           <button 
             type="submit" 
