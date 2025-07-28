@@ -16,7 +16,7 @@ const Packages = ({ bookings, cancelBooking }) => {
   const [callRequests, setCallRequests] = useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
   const [cancelledTrips, setCancelledTrips] = useState([]);
-  const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' or 'cancelled'
+  
 
   useEffect(() => {
     const upcoming = bookings.filter(b => b.payment.status !== 'cancelled' && b.payment.status !== 'refunded');
@@ -122,22 +122,9 @@ const Packages = ({ bookings, cancelBooking }) => {
       <div className="content-grid">
         {/* Left Column - Booking List */}
         <div className="booking-list-section">
-          <div className="tabs">
-            <button 
-              className={`tab-button ${activeTab === 'upcoming' ? 'active' : ''}`}
-              onClick={() => setActiveTab('upcoming')}
-            >
-              Upcoming Trips
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'cancelled' ? 'active' : ''}`}
-              onClick={() => setActiveTab('cancelled')}
-            >
-              Cancelled Trips
-            </button>
-          </div>
           
-          {activeTab === 'upcoming' ? (
+          
+         
             <>
               <h2><FaCalendarAlt /> Your Upcoming Trips</h2>
               
@@ -173,40 +160,7 @@ const Packages = ({ bookings, cancelBooking }) => {
                 </div>
               )}
             </>
-          ) : (
-            <>
-              <h2><FaTimesCircle /> Cancelled Trips</h2>
-              
-              {cancelledTrips.length > 0 ? (
-                cancelledTrips.map(trip => (
-                  <div key={trip.id} className="booking-card cancelled">
-                    <div className="booking-destination">
-                      <FaMapMarkerAlt /> {trip.destination}
-                    </div>
-                    <div className="booking-details">
-                      <div><FaCalendarAlt /> {new Date(trip.startDate).toLocaleDateString()}</div>
-                      <div>👥 {trip.travelers} traveler{trip.travelers > 1 ? 's' : ''}</div>
-                      <div>₹{trip.payment.amount.toLocaleString('en-IN')}</div>
-                    </div>
-                    <div className="booking-status cancelled">
-                      Cancelled
-                    </div>
-                    <div className="cancellation-details">
-                      <p><strong>Refund Status:</strong> {trip.refundStatus || 'Processing'}</p>
-                      <p><strong>Cancelled On:</strong> {formatDate(trip.cancelledDate)}</p>
-                      {trip.refundAmount && (
-                        <p><strong>Refund Amount:</strong> ₹{trip.refundAmount.toLocaleString('en-IN')}</p>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="no-bookings">
-                  <p>No cancelled trips found</p>
-                </div>
-              )}
-            </>
-          )}
+          
         </div>
 
         {/* Right Column - Cancellation Form */}
