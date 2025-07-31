@@ -3,6 +3,12 @@ import axios from 'axios';
 import { QRCodeSVG as QRCode } from 'qrcode.react';
 import './Booking.css';
 
+// List of international destinations where buses/trains aren't available
+const INTERNATIONAL_DESTINATIONS = [
+  'london', 'paris', 'new york', 'dubai', 'singapore', 
+  'tokyo', 'sydney', 'berlin', 'rome', 'bangkok'
+];
+
 const Booking = ({ addBooking }) => {
   // Main form state
   const [formData, setFormData] = useState({
@@ -97,6 +103,7 @@ const Booking = ({ addBooking }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [showReceipt, setShowReceipt] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [transportError, setTransportError] = useState('');
 
   // Calculate total amount
   useEffect(() => {
@@ -141,9 +148,29 @@ const Booking = ({ addBooking }) => {
     setPayment(prev => ({ ...prev, amount: total }));
   }, [formData, flightData, hotelData, carData, trainData, busData]);
 
-  // Fetch weather when destination changes
+  // Check for invalid transportation options when destination changes
   useEffect(() => {
     if (formData.destination) {
+      const isInternational = INTERNATIONAL_DESTINATIONS.includes(
+        formData.destination.toLowerCase()
+      );
+      
+      if (isInternational) {
+        setTransportError('For international destinations, only flights are available');
+        
+        // Disable bus/train options for international destinations
+        setFormData(prev => ({
+          ...prev,
+          addons: {
+            ...prev.addons,
+            bus: false,
+            train: false
+          }
+        }));
+      } else {
+        setTransportError('');
+      }
+      
       fetchWeather(formData.destination);
     }
   }, [formData.destination]);
@@ -172,16 +199,24 @@ const Booking = ({ addBooking }) => {
   // Fetch available trains when train search criteria changes
   useEffect(() => {
     if (formData.addons.train && trainData.from && trainData.to && trainData.travelDate) {
+      if (INTERNATIONAL_DESTINATIONS.includes(formData.destination.toLowerCase())) {
+        setTransportError('Train not available for international destinations');
+        return;
+      }
       fetchTrains();
     }
-  }, [trainData.from, trainData.to, trainData.travelDate, trainData.class]);
+  }, [trainData.from, trainData.to, trainData.travelDate, trainData.class, formData.destination]);
 
   // Fetch available buses when bus search criteria changes
   useEffect(() => {
     if (formData.addons.bus && busData.from && busData.to && busData.travelDate) {
+      if (INTERNATIONAL_DESTINATIONS.includes(formData.destination.toLowerCase())) {
+        setTransportError('Bus not available for international destinations');
+        return;
+      }
       fetchBuses();
     }
-  }, [busData.from, busData.to, busData.travelDate, busData.busType]);
+  }, [busData.from, busData.to, busData.travelDate, busData.busType, formData.destination]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -205,25 +240,22 @@ const Booking = ({ addBooking }) => {
 
   const fetchWeather = async (city) => {
     try {
-      // Using OpenWeatherMap API (you'll need to get your own API key)
       const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=YOUR_WEATHER_API_KEY`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=2672d3ffdd61ff2ed7f7f733ed16e0e8`
       );
       setWeather(response.data);
     } catch (error) {
       console.error("Error fetching weather:", error);
       // Fallback dummy data
       setWeather({
-        weather: [{ description: "Sunny" }],
-        main: { temp: 28, humidity: 65 },
-        wind: { speed: 5 }
+        weather: [{ description: "Weather data not available" }],
+        main: { temp: 'N/A', humidity: 'N/A' },
+        wind: { speed: 'N/A' }
       });
     }
   };
 
   const fetchFlights = async () => {
-    // In a real app, this would call your backend which calls flight API
-    // Here we'll use dummy data
     const dummyFlights = [
       {
         id: 1,
@@ -260,7 +292,6 @@ const Booking = ({ addBooking }) => {
   };
 
   const fetchHotels = async () => {
-    // Dummy hotel data based on destination
     const dummyHotels = [
       {
         id: 1,
@@ -291,7 +322,6 @@ const Booking = ({ addBooking }) => {
   };
 
   const fetchCars = async () => {
-    // Dummy car data
     const dummyCars = [
       {
         id: 1,
@@ -319,7 +349,6 @@ const Booking = ({ addBooking }) => {
   };
 
   const fetchTrains = async () => {
-    // Dummy train data
     const dummyTrains = [
       {
         id: 1,
@@ -346,7 +375,6 @@ const Booking = ({ addBooking }) => {
   };
 
   const fetchBuses = async () => {
-    // Dummy bus data
     const dummyBuses = [
       {
         id: 1,
@@ -393,6 +421,19 @@ const Booking = ({ addBooking }) => {
 
   const handleAddonChange = (e) => {
     const { name, checked } = e.target;
+    
+    // Check if trying to enable bus/train for international destination
+    if ((name === 'bus' || name === 'train') && checked) {
+      const isInternational = INTERNATIONAL_DESTINATIONS.includes(
+        formData.destination.toLowerCase()
+      );
+      
+      if (isInternational) {
+        setTransportError(`For international destinations like ${formData.destination}, ${name} is not available`);
+        return;
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       addons: {
@@ -400,6 +441,11 @@ const Booking = ({ addBooking }) => {
         [name]: checked
       }
     }));
+    
+    // Clear transport error if disabling the option
+    if ((name === 'bus' || name === 'train') && !checked) {
+      setTransportError('');
+    }
   };
 
   const handleFlightInputChange = (e) => {
@@ -465,15 +511,16 @@ const Booking = ({ addBooking }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // In a real app, you would send this data to your backend
-    console.log("Booking submitted:", {
-      formData,
-      flightData,
-      hotelData,
-      carData,
-      trainData,
-      busData
-    });
+    // Validate international destinations with bus/train
+    const isInternational = INTERNATIONAL_DESTINATIONS.includes(
+      formData.destination.toLowerCase()
+    );
+    
+    if (isInternational && (formData.addons.bus || formData.addons.train)) {
+      setTransportError('Cannot book bus/train for international destinations');
+      setCurrentStep(1); // Go back to first step
+      return;
+    }
     
     // Generate Razorpay order
     await initPayment();
@@ -482,7 +529,7 @@ const Booking = ({ addBooking }) => {
   const initPayment = () => {
     const options = {
       key: "rzp_test_yP3BDk7SSyJpG2",
-      amount: payment.amount * 100, // Razorpay expects amount in paise
+      amount: payment.amount * 100,
       currency: "INR",
       name: "Travel Booking",
       description: "Tour Package Payment",
@@ -497,7 +544,7 @@ const Booking = ({ addBooking }) => {
             carData,
             trainData,
             busData,
-            location: userLocation, // Add user location here
+            location: userLocation,
             payment: {
               ...payment,
               status: 'completed',
@@ -516,10 +563,8 @@ const Booking = ({ addBooking }) => {
             razorpaySignature: response.razorpay_signature
           }));
           
-          // Generate receipt
           generateReceipt();
 
-          // Add booking to App state
           addBooking({
             ...formData,
             flightData,
@@ -546,8 +591,6 @@ const Booking = ({ addBooking }) => {
       }
     };
     
-    // In a real app, you would first create an order on your backend
-    // For demo, we'll just generate a random order ID
     const orderId = `order_${Math.random().toString(36).substr(2, 9)}`;
     setPayment(prev => ({ ...prev, razorpayOrderId: orderId }));
     
@@ -624,6 +667,7 @@ const Booking = ({ addBooking }) => {
                 <p>Condition: {weather.weather[0].description}</p>
                 <p>Temperature: {weather.main.temp}°C</p>
                 <p>Humidity: {weather.main.humidity}%</p>
+                <p>Wind Speed: {weather.wind.speed} m/s</p>
               </div>
             )}
             
@@ -702,8 +746,11 @@ const Booking = ({ addBooking }) => {
                   name="train"
                   checked={formData.addons.train}
                   onChange={handleAddonChange}
+                  disabled={INTERNATIONAL_DESTINATIONS.includes(formData.destination.toLowerCase())}
                 />
                 Train Booking
+                {INTERNATIONAL_DESTINATIONS.includes(formData.destination.toLowerCase()) && 
+                  <span className="disabled-note"> (Not available for international destinations)</span>}
               </label>
 
               <label className="checkbox">
@@ -712,8 +759,11 @@ const Booking = ({ addBooking }) => {
                   name="bus"
                   checked={formData.addons.bus}
                   onChange={handleAddonChange}
+                  disabled={INTERNATIONAL_DESTINATIONS.includes(formData.destination.toLowerCase())}
                 />
                 Bus Booking
+                {INTERNATIONAL_DESTINATIONS.includes(formData.destination.toLowerCase()) && 
+                  <span className="disabled-note"> (Not available for international destinations)</span>}
               </label>
 
               <label className="checkbox">
@@ -726,6 +776,8 @@ const Booking = ({ addBooking }) => {
                 Guide Booking
               </label>
             </div>
+            
+            {transportError && <div className="error-message">{transportError}</div>}
             
             <button type="button" onClick={nextStep} className="next-btn" style={{width:'25%'}}>
               Next
@@ -1267,6 +1319,8 @@ const Booking = ({ addBooking }) => {
               <h4>Total: ₹{payment.amount}</h4>
             </div>
             
+            {transportError && <div className="error-message">{transportError}</div>}
+            
             <div className="navigation-buttons">
               <button type="button" onClick={prevStep} className="prev-btn"  style={{width:"35%"}}>
                 Previous
@@ -1497,4 +1551,4 @@ const Booking = ({ addBooking }) => {
   );
 };
 
-export default Booking;
+export default Booking; 
