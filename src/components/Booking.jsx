@@ -16,13 +16,16 @@ const Booking = ({ addBooking }) => {
       name: '',
       email: '',
       phone: '',
-      address: ''
+      address: '',
+      idType: 'Aadhar Card',
+      idNumber: ''
     },
     addons: {
       flight: false,
       hotel: false,
       car: false,
       train: false,
+      bus: false,
       guide: false
     }
   });
@@ -68,6 +71,17 @@ const Booking = ({ addBooking }) => {
     class: 'Sleeper',
     selectedTrain: null,
     availableTrains: []
+  });
+
+  // Bus booking state
+  const [busData, setBusData] = useState({
+    from: '',
+    to: '',
+    travelDate: '',
+    passengers: 1,
+    busType: 'Seater',
+    selectedBus: null,
+    availableBuses: []
   });
 
   // Weather state
@@ -118,9 +132,14 @@ const Booking = ({ addBooking }) => {
     if (formData.addons.train && trainData.selectedTrain) {
       total += trainData.selectedTrain.price * trainData.passengers;
     }
+
+    // Bus cost
+    if (formData.addons.bus && busData.selectedBus) {
+      total += busData.selectedBus.price * busData.passengers;
+    }
     
     setPayment(prev => ({ ...prev, amount: total }));
-  }, [formData, flightData, hotelData, carData, trainData]);
+  }, [formData, flightData, hotelData, carData, trainData, busData]);
 
   // Fetch weather when destination changes
   useEffect(() => {
@@ -156,6 +175,13 @@ const Booking = ({ addBooking }) => {
       fetchTrains();
     }
   }, [trainData.from, trainData.to, trainData.travelDate, trainData.class]);
+
+  // Fetch available buses when bus search criteria changes
+  useEffect(() => {
+    if (formData.addons.bus && busData.from && busData.to && busData.travelDate) {
+      fetchBuses();
+    }
+  }, [busData.from, busData.to, busData.travelDate, busData.busType]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -319,6 +345,33 @@ const Booking = ({ addBooking }) => {
     setTrainData(prev => ({ ...prev, availableTrains: dummyTrains }));
   };
 
+  const fetchBuses = async () => {
+    // Dummy bus data
+    const dummyBuses = [
+      {
+        id: 1,
+        operator: "Sharma Travels",
+        busNumber: "SH-101",
+        departure: "21:00",
+        arrival: "06:00",
+        duration: "9h",
+        price: 800,
+        seatsAvailable: 30
+      },
+      {
+        id: 2,
+        operator: "Verma Travels",
+        busNumber: "VM-202",
+        departure: "22:30",
+        arrival: "07:30",
+        duration: "9h",
+        price: 950,
+        seatsAvailable: 25
+      }
+    ];
+    setBusData(prev => ({ ...prev, availableBuses: dummyBuses }));
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -381,6 +434,14 @@ const Booking = ({ addBooking }) => {
     }));
   };
 
+  const handleBusInputChange = (e) => {
+    const { name, value } = e.target;
+    setBusData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const selectFlight = (flight) => {
     setFlightData(prev => ({ ...prev, selectedFlight: flight }));
   };
@@ -397,6 +458,10 @@ const Booking = ({ addBooking }) => {
     setTrainData(prev => ({ ...prev, selectedTrain: train }));
   };
 
+  const selectBus = (bus) => {
+    setBusData(prev => ({ ...prev, selectedBus: bus }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -406,7 +471,8 @@ const Booking = ({ addBooking }) => {
       flightData,
       hotelData,
       carData,
-      trainData
+      trainData,
+      busData
     });
     
     // Generate Razorpay order
@@ -430,6 +496,7 @@ const Booking = ({ addBooking }) => {
             hotelData,
             carData,
             trainData,
+            busData,
             location: userLocation, // Add user location here
             payment: {
               ...payment,
@@ -459,6 +526,7 @@ const Booking = ({ addBooking }) => {
             hotelData,
             carData,
             trainData,
+            busData,
             location: userLocation,
             payment: {
               ...payment,
@@ -500,7 +568,8 @@ const Booking = ({ addBooking }) => {
       flight: formData.addons.flight ? flightData.selectedFlight : null,
       hotel: formData.addons.hotel ? hotelData.selectedHotel : null,
       car: formData.addons.car ? carData.selectedCar : null,
-      train: formData.addons.train ? trainData.selectedTrain : null
+      train: formData.addons.train ? trainData.selectedTrain : null,
+      bus: formData.addons.bus ? busData.selectedBus : null
     };
     
     setPayment(prev => ({ ...prev, receipt }));
@@ -635,6 +704,16 @@ const Booking = ({ addBooking }) => {
                   onChange={handleAddonChange}
                 />
                 Train Booking
+              </label>
+
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  name="bus"
+                  checked={formData.addons.bus}
+                  onChange={handleAddonChange}
+                />
+                Bus Booking
               </label>
 
               <label className="checkbox">
@@ -984,6 +1063,89 @@ const Booking = ({ addBooking }) => {
                 )}
               </div>
             )}
+
+            {formData.addons.bus && (
+              <div className="addon-section">
+                <h3>Bus Booking</h3>
+                
+                <div className="form-group">
+                  <label>From</label>
+                  <input
+                    type="text"
+                    name="from"
+                    value={busData.from}
+                    onChange={handleBusInputChange}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>To</label>
+                  <input
+                    type="text"
+                    name="to"
+                    value={busData.to}
+                    onChange={handleBusInputChange}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Travel Date</label>
+                  <input
+                    type="date"
+                    name="travelDate"
+                    value={busData.travelDate}
+                    onChange={handleBusInputChange}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Passengers</label>
+                  <input
+                    type="number"
+                    name="passengers"
+                    value={busData.passengers}
+                    onChange={handleBusInputChange}
+                    min="1"
+                    max={formData.travelers}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Bus Type</label>
+                  <select
+                    name="busType"
+                    value={busData.busType}
+                    onChange={handleBusInputChange}
+                  >
+                    <option value="Seater">Seater</option>
+                    <option value="Sleeper">Sleeper</option>
+                  </select>
+                </div>
+                
+                {busData.availableBuses.length > 0 && (
+                  <div className="bus-options">
+                    <h4>Available Buses</h4>
+                    {busData.availableBuses.map(bus => (
+                      <div 
+                        key={bus.id} 
+                        className={`bus-option ${busData.selectedBus?.id === bus.id ? 'selected' : ''}`}
+                        onClick={() => selectBus(bus)}
+                      >
+                        <div className="bus-operator">{bus.operator}</div>
+                        <div className="bus-number">{bus.busNumber}</div>
+                        <div className="bus-time">
+                          {bus.departure} - {bus.arrival} ({bus.duration})
+                        </div>
+                        <div className="bus-price">₹{bus.price}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             
             <div className="navigation-buttons">
               <button type="button" onClick={prevStep} className="prev-btn" style={{width:"40%"}}>
@@ -1043,6 +1205,31 @@ const Booking = ({ addBooking }) => {
                 required
               />
             </div>
+
+            <div className="form-group">
+              <label>ID Proof Type</label>
+              <select
+                name="idType"
+                value={formData.travelerInfo.idType}
+                onChange={handleTravelerInfoChange}
+              >
+                <option value="Aadhar Card">Aadhar Card</option>
+                <option value="Passport">Passport</option>
+                <option value="Visa">Visa</option>
+                <option value="PAN Card">PAN Card</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>ID Proof Number</label>
+              <input
+                type="text"
+                name="idNumber"
+                value={formData.travelerInfo.idNumber}
+                onChange={handleTravelerInfoChange}
+                required
+              />
+            </div>
             
             <div className="payment-summary">
               <h3>Payment Summary</h3>
@@ -1071,6 +1258,10 @@ const Booking = ({ addBooking }) => {
               
               {formData.addons.train && trainData.selectedTrain && (
                 <p>Train: {trainData.selectedTrain.name} (₹{trainData.selectedTrain.price * trainData.passengers})</p>
+              )}
+
+              {formData.addons.bus && busData.selectedBus && (
+                <p>Bus: {busData.selectedBus.operator} (₹{busData.selectedBus.price * busData.passengers})</p>
               )}
               
               <h4>Total: ₹{payment.amount}</h4>
@@ -1106,6 +1297,7 @@ const Booking = ({ addBooking }) => {
           <p>Name: {formData.travelerInfo.name}</p>
           <p>Email: {formData.travelerInfo.email}</p>
           <p>Phone: {formData.travelerInfo.phone}</p>
+          <p>ID Proof: {formData.travelerInfo.idType} - {formData.travelerInfo.idNumber}</p>
         </div>
         
         <div className="receipt-section">
@@ -1209,6 +1401,45 @@ const Booking = ({ addBooking }) => {
                   </div>
                   <div className="price">
                     Price: ₹{payment.receipt.train.price}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {formData.addons.bus && payment.receipt.bus && (
+          <div className="receipt-section">
+            <h3>Bus Ticket</h3>
+            <div className="ticket">
+              <div className="ticket-header">
+                <div className="bus-operator">{payment.receipt.bus.operator}</div>
+                <div className="bus-number">{payment.receipt.bus.busNumber}</div>
+              </div>
+              <div className="ticket-body">
+                <div className="from-to">
+                  <div className="departure">
+                    <div className="city">{busData.from}</div>
+                    <div className="time">{payment.receipt.bus.departure}</div>
+                  </div>
+                  <div className="arrow">→</div>
+                  <div className="arrival">
+                    <div className="city">{busData.to}</div>
+                    <div className="time">{payment.receipt.bus.arrival}</div>
+                  </div>
+                </div>
+                <div className="passenger">
+                  Passenger: {formData.travelerInfo.name}
+                </div>
+                <div className="ticket-footer">
+                  <div className="barcode">
+                    <QRCode 
+                      value={`BUS-${payment.receipt.bookingId}`} 
+                      size={80} 
+                    />
+                  </div>
+                  <div className="price">
+                    Price: ₹{payment.receipt.bus.price}
                   </div>
                 </div>
               </div>
