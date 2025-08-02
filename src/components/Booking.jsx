@@ -20,7 +20,7 @@ const VALID_DESTINATIONS = {
 { id: 'badrinath-chota-dham', name: 'Badrinath Chota Dham', country: 'India', type: 'chota-char-dham' },
 { id: 'somnath-jyotirlinga', name: 'Somnath Jyotirlinga', country: 'India', type: 'jyotirlinga' },
 { id: 'mallikarjuna-jyotirlinga', name: 'Mallikarjuna Jyotirlinga', country: 'India', type: 'jyotirlinga' },
-{ id: 'maha-mrityunjaya-jyotirlinga', name: 'Mahakaleshwar Jyotirlinga', country: 'India', type: 'jyotirlinga' },
+
 { id: 'omkareshwar-jyotirlinga', name: 'Omkareshwar Jyotirlinga', country: 'India', type: 'jyotirlinga' },
 { id: 'kedarnath-jyotirlinga', name: 'Kedarnath Jyotirlinga', country: 'India', type: 'jyotirlinga' },
 { id: 'bhimashankar-jyotirlinga', name: 'Bhimashankar Jyotirlinga', country: 'India', type: 'jyotirlinga' },
