@@ -730,7 +730,9 @@ const Booking = ({ addBooking }) => {
     passengers: 1,
     class: 'Economy',
     selectedFlight: null,
-    availableFlights: []
+    availableFlights: [],
+    returnFlight: null, // Add this line
+    availableReturnFlights: [] // Add this line
   });
 
   // Hotel booking state
@@ -808,6 +810,9 @@ const Booking = ({ addBooking }) => {
     // Flight cost
     if (formData.addons.flight && flightData.selectedFlight) {
       total += flightData.selectedFlight.price * flightData.passengers;
+    }
+    if (formData.addons.flight && flightData.returnFlight) {
+      total += flightData.returnFlight.price * flightData.passengers;
     }
     
     // Hotel cost
@@ -1024,7 +1029,13 @@ price: isInternational ? 30000 : 6800,
 seatsAvailable: 10
       }
     ];
-    setFlightData(prev => ({ ...prev, availableFlights: dummyFlights }));
+
+    if (flightData.roundTrip) {
+      const dummyReturnFlights = dummyFlights.map(flight => ({ ...flight, id: flight.id + 100, price: flight.price * 0.9 }));
+      setFlightData(prev => ({ ...prev, availableFlights: dummyFlights, availableReturnFlights: dummyReturnFlights }));
+    } else {
+      setFlightData(prev => ({ ...prev, availableFlights: dummyFlights, availableReturnFlights: [], returnFlight: null }));
+    }
   };
 
   const fetchHotels = async () => {
@@ -1179,10 +1190,10 @@ seatsAvailable: 10
   };
 
   const handleFlightInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFlightData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -1338,7 +1349,7 @@ seatsAvailable: 10
       duration: `${formData.duration} days`,
       travelers: formData.travelers,
       totalAmount: payment.amount,
-      flight: formData.addons.flight ? flightData.selectedFlight : null,
+      flight: formData.addons.flight ? { ...flightData.selectedFlight, returnFlight: flightData.returnFlight } : null,
       hotel: formData.addons.hotel ? hotelData.selectedHotel : null,
       car: formData.addons.car ? carData.selectedCar : null,
       train: formData.addons.train ? trainData.selectedTrain : null,
@@ -1608,15 +1619,29 @@ seatsAvailable: 10
                 </div>
                 
                 <div className="form-group">
-                  <label>Return Date (if round trip)</label>
-                  <input
-                    type="date"
-                    name="returnDate"
-                    value={flightData.returnDate}
-                    onChange={handleFlightInputChange}
-                    min={flightData.departureDate}
-                  />
+                  <div className="round-trip-group">
+                    <input
+                      type="checkbox"
+                      name="roundTrip"
+                      checked={flightData.roundTrip}
+                      onChange={handleFlightInputChange}
+                    />
+                    <label>Round Trip?</label>
+                  </div>
                 </div>
+                
+                {flightData.roundTrip && (
+                  <div className="form-group">
+                    <label>Return Date</label>
+                    <input
+                      type="date"
+                      name="returnDate"
+                      value={flightData.returnDate}
+                      onChange={handleFlightInputChange}
+                      min={flightData.departureDate}
+                    />
+                  </div>
+                )}
                 
                 <div className="form-group">
                   <label>Passengers</label>
@@ -1651,6 +1676,27 @@ seatsAvailable: 10
                         key={flight.id} 
                         className={`flight-option ${flightData.selectedFlight?.id === flight.id ? 'selected' : ''}`}
                         onClick={() => selectFlight(flight)}
+                      >
+                        <div className="flight-airline">{flight.airline}</div>
+                        <div className="flight-number">{flight.flightNumber}</div>
+                        <div className="flight-time">
+                          {flight.departure} - {flight.arrival} ({flight.duration})
+                        </div>
+                        <div className="flight-price">₹{flight.price}</div>
+                        <div className="flight-seats">{flight.seatsAvailable} seats left</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {flightData.roundTrip && flightData.availableReturnFlights.length > 0 && (
+                  <div className="flight-options">
+                    <h4>Available Return Flights</h4>
+                    {flightData.availableReturnFlights.map(flight => (
+                      <div 
+                        key={flight.id} 
+                        className={`flight-option ${flightData.returnFlight?.id === flight.id ? 'selected' : ''}`}
+                        onClick={() => setFlightData(prev => ({ ...prev, returnFlight: flight }))}
                       >
                         <div className="flight-airline">{flight.airline}</div>
                         <div className="flight-number">{flight.flightNumber}</div>
