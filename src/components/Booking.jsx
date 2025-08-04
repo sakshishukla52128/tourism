@@ -13,7 +13,6 @@ const VALID_DESTINATIONS = {
 { id: 'jagannath-puri-dham', name: 'Jagannath Puri Dham', country: 'India', type: 'char-dham' },
 { id: 'rameshwaram-dham', name: 'Rameshwaram Dham', country: 'India', type: 'char-dham' },
 { id: 'bangladesh', name: 'Bangladesh', type: 'country' },
-// 🌄 Chota Char Dham (Uttarakhand)
 { id: 'yamunotri-dham', name: 'Yamunotri Dham', country: 'India', type: 'chota-char-dham' },
 { id: 'gangotri-dham', name: 'Gangotri Dham', country: 'India', type: 'chota-char-dham' },
 { id: 'kedarnath-dham', name: 'Kedarnath Dham', country: 'India', type: 'chota-char-dham' },
@@ -819,7 +818,7 @@ const Booking = ({ addBooking }) => {
     
     // Car cost
     if (formData.addons.car && carData.selectedCar) {
-      const days = Math.ceil((new Date(carData.dropoffDate) - new Date(carData.pickupDate)) / (1000 * 60 * 60 * 24));
+      const days = Math.ceil((new Date(carData.dropoffDate)) - new Date(carData.pickupDate)) / (1000 * 60 * 60 * 24);
       total += carData.selectedCar.price * days;
     }
     
@@ -1008,7 +1007,6 @@ arrival: isInternational ? "20:00" : "19:15",
 duration: isInternational ? "3h 30m" : "2h 45m",
 price: isInternational ? 30000 : 6800,
 seatsAvailable: 10
-
       }
     ];
     setFlightData(prev => ({ ...prev, availableFlights: dummyFlights }));
@@ -1254,7 +1252,7 @@ seatsAvailable: 10
     await initPayment();
   };
 
-  const initPayment = () => {
+  const initPayment = async () => {
     const options = {
       key: "rzp_test_yP3BDk7SSyJpG2",
       amount: payment.amount * 100,
@@ -1264,7 +1262,6 @@ seatsAvailable: 10
       order_id: payment.razorpayOrderId,
       handler: async (response) => {
         try {
-          // In a real app, you would verify payment on your backend
           const bookingData = {
             ...formData,
             flightData,
@@ -1285,19 +1282,20 @@ seatsAvailable: 10
           };
 
           // Send booking data to the backend
-          await axios.post('http://localhost:5000/api/bookings', bookingData);
-
-          setPayment(prev => ({
-            ...prev,
-            status: 'completed',
-            razorpayPaymentId: response.razorpay_payment_id,
-            razorpayOrderId: response.razorpay_order_id,
-            razorpaySignature: response.razorpay_signature
-          }));
+          const res = await axios.post('http://localhost:5000/api/bookings', bookingData);
           
-          generateReceipt();
-
-          addBooking(bookingData);
+          if (res.data.success) {
+            setPayment(prev => ({
+              ...prev,
+              status: 'completed',
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature
+            }));
+            
+            generateReceipt();
+            addBooking(bookingData);
+          }
         } catch (err) {
           console.error('Error processing booking:', err);
         }
