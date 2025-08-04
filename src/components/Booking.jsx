@@ -8,6 +8,7 @@ const VALID_DESTINATIONS = {
   // Domestic destinations (India)
   domestic: [
    // 🔱 Char Dham (Main 4)
+{id: 'goa-beaches', name: 'Goa Beaches', country: 'India', type: 'beach' },
 { id: 'badrinath-dham', name: 'Badrinath Dham', country: 'India', type: 'char-dham' },
 { id: 'dwarka-dham', name: 'Dwarka Dham', country: 'India', type: 'char-dham' },
 { id: 'jagannath-puri-dham', name: 'Jagannath Puri Dham', country: 'India', type: 'char-dham' },
