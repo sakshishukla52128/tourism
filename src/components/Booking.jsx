@@ -898,6 +898,21 @@ const Booking = ({ addBooking }) => {
   }, [formData.destination]);
 
   useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      const start = new Date(formData.startDate);
+      const end = new Date(formData.endDate);
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 0) {
+        setFormData(prev => ({ ...prev, duration: diffDays }));
+      } else {
+        setFormData(prev => ({ ...prev, duration: 1 }));
+      }
+    }
+  }, [formData.startDate, formData.endDate]);
+
+  useEffect(() => {
     if (formData.addons.flight && flightData.from && flightData.to && flightData.departureDate) {
       fetchFlights();
     }
@@ -1397,7 +1412,11 @@ seatsAvailable: 10
                 value={formData.startDate}
                 onChange={handleInputChange}
                 required
-                min={new Date().toISOString().split('T')[0]}
+                min={(() => {
+                  const today = new Date();
+                  today.setDate(today.getDate() + 4);
+                  return today.toISOString().split('T')[0];
+                })()}
               />
             </div>
             
@@ -1444,7 +1463,7 @@ seatsAvailable: 10
                 name="duration"
                 value={formData.duration}
                 onChange={handleInputChange}
-                min="1"
+                readOnly
               />
             </div>
             
