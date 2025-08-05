@@ -28,6 +28,8 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import Home from './components/Home';
 import Certifiedguide from './components/Certifiedguide';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import './App.css';
 
 const App = () => {
@@ -76,6 +78,8 @@ const App = () => {
           <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/tourism" element={<Home isAuthenticated={isAuthenticated} />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </div>
     </Router>
