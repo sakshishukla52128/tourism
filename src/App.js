@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import image from './assets/logo.png';
 
+
+
 import { 
   faHome, 
   faUser, 
@@ -10,7 +12,10 @@ import {
   faPhone, 
   faMapMarkerAlt,
   faBars,
-  faTimes
+  faTimes,
+  faUserCheck,
+  faCalendarCheck,
+  faMoneyBillWave
 } from '@fortawesome/free-solid-svg-icons';
 import { 
   faInstagram, 
@@ -125,23 +130,25 @@ const Navbar = ({ isAuthenticated, handleLogout }) => {
           <>
             <li>
               <Link to="/booking" className="nav-link" onClick={closeMobileMenu}>
-                <FontAwesomeIcon icon={faUser} className="nav-icon" />
+<FontAwesomeIcon icon={faCalendarCheck} className="nav-icon" />
                 Booking
               </Link>
             </li>
             <li>
               <Link to="/certifiedguide" className="nav-link" onClick={closeMobileMenu}>
+              <FontAwesomeIcon icon={faUserCheck} className="nav-icon" />
                 Certified Guide
               </Link>
             </li>
             <li>
               <Link to="/contact" className="nav-link" onClick={closeMobileMenu}>
                 <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />
-                Contact
+               Enquire Now
               </Link>
             </li>
             <li>
               <Link to="/packages" className="nav-link" onClick={closeMobileMenu}>
+              <FontAwesomeIcon icon={faMoneyBillWave} className="nav-icon" />
                 Refund
               </Link>
             </li>
