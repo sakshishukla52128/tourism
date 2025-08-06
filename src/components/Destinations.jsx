@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './Destinations.css';
 
-const Destinations = ({ onDestinationsLoad }) => {
+const Destinations = ({ onDestinationsLoad, isAuthenticated }) => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -294,9 +294,14 @@ const Destinations = ({ onDestinationsLoad }) => {
               )}
 
               <div className="modal-actions">
-                <button className="contact-btn" onClick={() => window.location.href = 'Contact'}>
+                <button className="contact-btn" onClick={() => window.location.href = '/Contact'}>
                   Contact to Enquiry
                 </button>
+                {isAuthenticated && (
+                  <button className="book-now-btn" onClick={() => window.location.href = `/booking?destination=${selectedPlace.name}`}>
+                    Book Now
+                  </button>
+                )}
               
               </div>
             </div>

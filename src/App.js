@@ -70,7 +70,7 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
-          <Route path="/destinations" element={<Destinations onDestinationsLoad={setDestinations} />} />
+          <Route path="/destinations" element={<Destinations onDestinationsLoad={setDestinations} isAuthenticated={isAuthenticated} />} />
           <Route path="/packages" element={<Packages bookings={bookings} cancelBooking={cancelBooking} />} />
           <Route path="/booking" element={<Booking addBooking={addBooking} destinations={destinations} />} />
           <Route path="/certifiedguide" element={<Certifiedguide />} />
