@@ -149,7 +149,7 @@ const Navbar = ({ isAuthenticated, handleLogout }) => {
             <li>
               <Link to="/packages" className="nav-link" onClick={closeMobileMenu}>
               <FontAwesomeIcon icon={faMoneyBillWave} className="nav-icon" />
-                Refund
+               Cancel Booking
               </Link>
             </li>
             <div className="auth-buttons">
