@@ -35,6 +35,7 @@ import Home from './components/Home';
 import Certifiedguide from './components/Certifiedguide';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import Feedback from './components/Feedback';
 import './App.css';
 
 const App = () => {
@@ -85,6 +86,7 @@ const App = () => {
           <Route path="/tourism" element={<Home isAuthenticated={isAuthenticated} />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/feedback" element={<Feedback />} />
         </Routes>
       </div>
     </Router>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { QRCodeSVG as QRCode } from 'qrcode.react';
 import './Booking.css';
@@ -696,6 +697,7 @@ const ALL_DESTINATIONS = [
 ].map(dest => dest.id);
 
 const Booking = ({ addBooking }) => {
+  const navigate = useNavigate();
   // Main form state
   const [formData, setFormData] = useState({
     destination: '',
@@ -2081,8 +2083,7 @@ seatsAvailable: 10
                 onChange={handleTravelerInfoChange}
                 required
               />
-            </div>
-            
+            </div>  
             <div className="form-group">
               <label>Email</label>
               <input
@@ -2469,6 +2470,10 @@ seatsAvailable: 10
           onClick={() => window.print()}
         >
           Print Receipt
+        </button>
+
+        <button onClick={() => navigate('/feedback')} className="next-btn" style={{marginTop: '20px'}}>
+          Next
         </button>
       </div>
     );
