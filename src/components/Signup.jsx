@@ -42,9 +42,16 @@ const Signup = ({ setIsAuthenticated }) => {
   // ✅ Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let newValue = value;
+
+    // Validation for name field (only alphabets)
+    if (name === 'name') {
+      newValue = value.replace(/[^a-zA-Z\s]/g, ''); // Allow alphabets and spaces
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: newValue
     }));
   };
 

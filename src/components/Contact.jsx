@@ -53,7 +53,18 @@ const Contact = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    let newValue = value;
+
+    // Validation for phone field (only 15 digits)
+    if (name === 'phone') {
+      newValue = value.replace(/\D/g, '').slice(0, 15); // Allow only digits, limit to 15
+    }
+    // Validation for name field (only alphabets and spaces)
+    if (name === 'name') {
+      newValue = value.replace(/[^a-zA-Z\s]/g, '');
+    }
+
+    setFormData(prev => ({ ...prev, [name]: newValue }));
   };
 
   const validateForm = () => {
