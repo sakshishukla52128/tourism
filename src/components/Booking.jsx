@@ -714,6 +714,7 @@ const Booking = ({ addBooking }) => {
       idType: 'Aadhar Card',
       idNumber: ''
     },
+    travelerNames: [''], // New: Initialize with one empty string for the main traveler
     addons: {
       flight: false,
       hotel: false,
@@ -919,6 +920,17 @@ const Booking = ({ addBooking }) => {
       }
     }
   }, [formData.startDate, formData.endDate]);
+
+  useEffect(() => {
+    // Resize travelerNames array when formData.travelers changes
+    setFormData(prev => {
+      const newTravelerNames = Array.from({ length: prev.travelers }, (_, i) => prev.travelerNames[i] || '');
+      return {
+        ...prev,
+        travelerNames: newTravelerNames
+      };
+    });
+  }, [formData.travelers]);
 
   useEffect(() => {
     if (formData.addons.flight && flightData.from && flightData.to && flightData.departureDate) {
@@ -1169,6 +1181,17 @@ seatsAvailable: 10
     }));
   };
 
+  const handleTravelerNameChange = (index, value) => {
+    setFormData(prev => {
+      const newTravelerNames = [...prev.travelerNames];
+      newTravelerNames[index] = value;
+      return {
+        ...prev,
+        travelerNames: newTravelerNames
+      };
+    });
+  };
+
   const handleAddonChange = (e) => {
     const { name, checked } = e.target;
     
@@ -1293,6 +1316,10 @@ seatsAvailable: 10
         try {
           const bookingData = {
             ...formData,
+            travelerInfo: { // Explicitly define travelerInfo to include travelerNames
+              ...formData.travelerInfo,
+              travelerNames: formData.travelerNames
+            },
             flightData,
             hotelData,
             carData,
@@ -1346,6 +1373,7 @@ seatsAvailable: 10
       bookingId: `BOOK-${Math.random().toString(36).substr(2, 8).toUpperCase()}`,
       date: new Date().toLocaleDateString(),
       traveler: formData.travelerInfo.name,
+      travelerNames: formData.travelerNames, // Add traveler names to receipt
       destination: destinationDetails?.name || formData.destination,
       country: destinationDetails?.country || 'India',
       package: formData.packageType,
@@ -1491,6 +1519,18 @@ seatsAvailable: 10
                 min="1"
               />
             </div>
+            {Array.from({ length: formData.travelers }).map((_, index) => (
+              <div className="form-group" key={index}>
+                <label>{index === 0 ? 'Main Traveler Name' : `Traveler ${index + 1} Name`}</label>
+                <input
+                  type="text"
+                  value={formData.travelerNames[index] || ''}
+                  onChange={(e) => handleTravelerNameChange(index, e.target.value)}
+                  placeholder={index === 0 ? 'Enter main traveler name' : `Enter traveler ${index + 1} name`}
+                  required
+                />
+              </div>
+            ))}
             
             <div className="addons">
               <h3>Add-on Services</h3>
@@ -2256,6 +2296,10 @@ seatsAvailable: 10
             <span>ID Proof:</span>
             <span>{formData.travelerInfo.idType} - {formData.travelerInfo.idNumber}</span>
           </div>
+          <div className="info-item">
+            <span>Traveler(s) Name:</span>
+            <span>{payment.receipt.travelerNames.join(', ')}</span>
+          </div>
         </div>
         
         <div className="receipt-section">
@@ -2299,7 +2343,7 @@ seatsAvailable: 10
                   </div>
                 </div>
                 <div className="passenger">
-                  Passenger: {formData.travelerInfo.name}
+                  Passengers: {payment.receipt.travelerNames.join(', ')}
                 </div>
                 <div className="ticket-footer">
                   <div className="barcode">
@@ -2390,7 +2434,7 @@ seatsAvailable: 10
                   </div>
                 </div>
                 <div className="passenger">
-                  Passenger: {formData.travelerInfo.name}
+                  Passengers: {payment.receipt.travelerNames.join(', ')}
                 </div>
                 <div className="ticket-footer">
                   <div className="barcode">
@@ -2429,7 +2473,7 @@ seatsAvailable: 10
                   </div>
                 </div>
                 <div className="passenger">
-                  Passenger: {formData.travelerInfo.name}
+                  Passengers: {payment.receipt.travelerNames.join(', ')}
                 </div>
                 <div className="ticket-footer">
                   <div className="barcode">
