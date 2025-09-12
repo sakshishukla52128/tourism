@@ -20,6 +20,8 @@ import {
   faTree,
  
 } from '@fortawesome/free-solid-svg-icons';
+
+import TouristChatbot from './TouristChatbot';
 import './Home.css';
 
 const Home = ({ isAuthenticated }) => {
@@ -341,6 +343,7 @@ const Home = ({ isAuthenticated }) => {
           © 2023 TripVibe. All rights reserved. | Designed with ❤️ for travelers
         </div>
       </footer>
+    <TouristChatbot />
     </div>
   );
 };
