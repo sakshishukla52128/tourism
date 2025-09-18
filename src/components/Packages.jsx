@@ -126,7 +126,7 @@ const Packages = ({ bookings, cancelBooking }) => {
           
          
             <>
-              <h2><FaCalendarAlt /> Your Upcoming Trips</h2>
+              <h2><FaCalendarAlt /> Your Trips</h2>
               
               {upcomingBookings.length > 0 ? (
                 upcomingBookings.map(booking => (
