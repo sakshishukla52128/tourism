@@ -139,7 +139,7 @@ const Packages = ({ bookings, cancelBooking }) => {
                     }}
                   >
                     <div className="booking-destination">
-                      <FaMapMarkerAlt /> {booking.destination}
+                      <FaMapMarkerAlt /> {typeof booking.destination === 'object' && booking.destination !== null ? booking.destination.name : booking.destination}
                     </div>
                     <div className="booking-details">
                       <div><FaCalendarAlt /> {new Date(booking.startDate).toLocaleDateString()}</div>
@@ -170,7 +170,7 @@ const Packages = ({ bookings, cancelBooking }) => {
               <h2><FaMoneyBillWave /> Cancel Booking</h2>
               
               <div className="selected-booking">
-                <h3>{selectedBooking.destination}</h3>
+                <h3>{typeof selectedBooking.destination === 'object' && selectedBooking.destination !== null ? selectedBooking.destination.name : selectedBooking.destination}</h3>
                 <p><FaCalendarAlt /> {new Date(selectedBooking.startDate).toLocaleDateString()}</p>
                 <p>₹{selectedBooking.payment.amount.toLocaleString('en-IN')}</p>
                 <p className="payment-id">Payment ID: {selectedBooking.bookingId}</p>
@@ -382,7 +382,7 @@ const Packages = ({ bookings, cancelBooking }) => {
             <h3>Request Received Successfully!</h3>
             <div className="success-details">
               <p>We've received your cancellation request for:</p>
-              <p className="destination"><strong>{selectedBooking?.destination}</strong></p>
+              <p className="destination"><strong>{typeof selectedBooking?.destination === 'object' && selectedBooking?.destination !== null ? selectedBooking.destination.name : selectedBooking?.destination}</strong></p>
               <p>Our executive will call you shortly at:</p>
               <p className="contact-number"><strong>{contactNumber}</strong></p>
             </div>
