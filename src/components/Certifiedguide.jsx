@@ -377,6 +377,7 @@ const Certifiedguide = () => {
               <section className="personal-details">
                 <h3>Personal Details</h3>
                 <ul>
+                  <li><strong>GuideId:</strong> {selectedGuide.id}</li>
                   <li><strong>Email:</strong> {selectedGuide.email}</li>
                   <li><strong>Mobile:</strong> {selectedGuide.mobile}</li>
                   <li><strong>Location:</strong> {selectedGuide.address}</li>
