@@ -715,6 +715,13 @@ const Booking = ({ addBooking }) => {
       idNumber: ''
     },
     travelerNames: [''], // New: Initialize with one empty string for the main traveler
+    passengerDetails: [{ // Initialize passenger details for each traveler
+      name: '',
+      age: '',
+      gender: '',
+      idProofType: 'Aadhar Card',
+      idProofNumber: ''
+    }],
     addons: {
       flight: false,
       hotel: false,
@@ -922,12 +929,20 @@ const Booking = ({ addBooking }) => {
   }, [formData.startDate, formData.endDate]);
 
   useEffect(() => {
-    // Resize travelerNames array when formData.travelers changes
+    // Resize travelerNames and passengerDetails arrays when formData.travelers changes
     setFormData(prev => {
       const newTravelerNames = Array.from({ length: prev.travelers }, (_, i) => prev.travelerNames[i] || '');
+      const newPassengerDetails = Array.from({ length: prev.travelers }, (_, i) => prev.passengerDetails[i] || {
+        name: '',
+        age: '',
+        gender: '',
+        idProofType: 'Aadhar Card',
+        idProofNumber: ''
+      });
       return {
         ...prev,
-        travelerNames: newTravelerNames
+        travelerNames: newTravelerNames,
+        passengerDetails: newPassengerDetails
       };
     });
   }, [formData.travelers]);
@@ -1185,9 +1200,28 @@ seatsAvailable: 10
     setFormData(prev => {
       const newTravelerNames = [...prev.travelerNames];
       newTravelerNames[index] = value;
+      // Also update name in passengerDetails
+      const newPassengerDetails = [...prev.passengerDetails];
+      newPassengerDetails[index] = { ...newPassengerDetails[index], name: value };
       return {
         ...prev,
-        travelerNames: newTravelerNames
+        travelerNames: newTravelerNames,
+        passengerDetails: newPassengerDetails
+      };
+    });
+  };
+
+  // New handler for passenger detail changes
+  const handlePassengerDetailChange = (index, field, value) => {
+    setFormData(prev => {
+      const newPassengerDetails = [...prev.passengerDetails];
+      newPassengerDetails[index] = { 
+        ...newPassengerDetails[index], 
+        [field]: value 
+      };
+      return {
+        ...prev,
+        passengerDetails: newPassengerDetails
       };
     });
   };
@@ -1320,6 +1354,7 @@ seatsAvailable: 10
               ...formData.travelerInfo,
               travelerNames: formData.travelerNames
             },
+            passengerDetails: formData.passengerDetails, // Add passenger details array
             flightData,
             hotelData,
             carData,
@@ -1337,6 +1372,8 @@ seatsAvailable: 10
             bookingId: `BOOK-${Math.random().toString(36).substr(2, 8).toUpperCase()}`
           };
 
+          console.log('📤 Sending booking with passenger details:', bookingData.passengerDetails);
+          
           // Send booking data to the backend
           const res = await axios.post('http://localhost:5000/api/bookings', bookingData);
           
@@ -1520,15 +1557,84 @@ seatsAvailable: 10
               />
             </div>
             {Array.from({ length: formData.travelers }).map((_, index) => (
-              <div className="form-group" key={index}>
-                <label>{index === 0 ? 'Main Traveler Name' : `Traveler ${index + 1} Name`}</label>
-                <input
-                  type="text"
-                  value={formData.travelerNames[index] || ''}
-                  onChange={(e) => handleTravelerNameChange(index, e.target.value)}
-                  placeholder={index === 0 ? 'Enter main traveler name' : `Enter traveler ${index + 1} name`}
-                  required
-                />
+              <div key={index} style={{
+                border: '1px solid #ddd',
+                padding: '15px',
+                marginBottom: '15px',
+                borderRadius: '8px',
+                backgroundColor: '#f9f9f9'
+              }}>
+                <h4 style={{ marginTop: 0, color: '#333', borderBottom: '2px solid #007bff', paddingBottom: '8px' }}>
+                  {index === 0 ? '👤 Main Traveler Details' : `👤 Traveler ${index + 1} Details`}
+                </h4>
+                
+                <div className="form-group">
+                  <label>Full Name *</label>
+                  <input
+                    type="text"
+                    value={formData.travelerNames[index] || ''}
+                    onChange={(e) => handleTravelerNameChange(index, e.target.value)}
+                    placeholder={index === 0 ? 'Enter main traveler name' : `Enter traveler ${index + 1} name`}
+                    required
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div className="form-group">
+                    <label>Age *</label>
+                    <input
+                      type="number"
+                      value={formData.passengerDetails[index]?.age || ''}
+                      onChange={(e) => handlePassengerDetailChange(index, 'age', e.target.value)}
+                      placeholder="Enter age"
+                      min="1"
+                      max="120"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Gender *</label>
+                    <select
+                      value={formData.passengerDetails[index]?.gender || ''}
+                      onChange={(e) => handlePassengerDetailChange(index, 'gender', e.target.value)}
+                      required
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div className="form-group">
+                    <label>ID Proof Type *</label>
+                    <select
+                      value={formData.passengerDetails[index]?.idProofType || 'Aadhar Card'}
+                      onChange={(e) => handlePassengerDetailChange(index, 'idProofType', e.target.value)}
+                      required
+                    >
+                      <option value="Aadhar Card">Aadhar Card</option>
+                      <option value="Passport">Passport</option>
+                      <option value="Driving License">Driving License</option>
+                      <option value="Voter ID">Voter ID</option>
+                      <option value="PAN Card">PAN Card</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>ID Proof Number *</label>
+                    <input
+                      type="text"
+                      value={formData.passengerDetails[index]?.idProofNumber || ''}
+                      onChange={(e) => handlePassengerDetailChange(index, 'idProofNumber', e.target.value)}
+                      placeholder="Enter ID number"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
             ))}
             
