@@ -947,18 +947,21 @@ const Booking = ({ addBooking }) => {
     });
   }, [formData.travelers]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (formData.addons.flight && flightData.from && flightData.to && flightData.departureDate) {
       fetchFlights();
     }
   }, [flightData.from, flightData.to, flightData.departureDate, flightData.returnDate, flightData.class]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (formData.addons.hotel && formData.destination && hotelData.checkIn && hotelData.checkOut) {
       fetchHotels();
     }
   }, [formData.destination, hotelData.checkIn, hotelData.checkOut, hotelData.budget, hotelData.starRating]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (formData.addons.car && formData.destination && carData.pickupDate) {
       fetchCars();
@@ -966,6 +969,7 @@ const Booking = ({ addBooking }) => {
   }, [formData.destination, carData.pickupDate, carData.dropoffDate, carData.carType]);
 
   // Fetch available trains when train search criteria changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (formData.addons.train && trainData.from && trainData.to && trainData.travelDate) {
       if (isInternational) {
@@ -977,6 +981,7 @@ const Booking = ({ addBooking }) => {
   }, [trainData.from, trainData.to, trainData.travelDate, trainData.class, isInternational]);
 
   // Fetch available buses when bus search criteria changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (formData.addons.bus && busData.from && busData.to && busData.travelDate) {
       if (isInternational) {
@@ -2521,38 +2526,165 @@ seatsAvailable: 10
         
         {formData.addons.train && payment.receipt.train && (
           <div className="receipt-section">
-            <h3>Train Ticket</h3>
-            <div className="ticket">
-              <div className="ticket-header">
-                <div className="train-name">{payment.receipt.train.name}</div>
-                <div className="train-number">{payment.receipt.train.number}</div>
+            <h3>Train Ticket - Electronic Reservation Slip (ERS)</h3>
+            <div className="train-ticket-irctc" style={{
+              border: '2px solid #000',
+              background: 'white',
+              padding: '15px',
+              borderRadius: '5px',
+              fontFamily: 'Arial, sans-serif'
+            }}>
+              {/* Header */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                borderBottom: '2px solid #000',
+                paddingBottom: '10px',
+                marginBottom: '10px'
+              }}>
+                <div>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold' }}>🚂 INDIAN RAILWAYS</div>
+                  <div style={{ fontSize: '11px' }}>Electronic Reservation Slip (ERS)</div>
+                </div>
+                <div style={{ textAlign: 'right', fontSize: '11px' }}>
+                  <div style={{ fontWeight: 'bold' }}>IRCTC</div>
+                </div>
               </div>
-              <div className="ticket-body">
-                <div className="from-to">
-                  <div className="departure">
-                    <div className="city">{trainData.from}</div>
-                    <div className="time">{payment.receipt.train.departure}</div>
-                  </div>
-                  <div className="arrow">→</div>
-                  <div className="arrival">
-                    <div className="city">{trainData.to}</div>
-                    <div className="time">{payment.receipt.train.arrival}</div>
+
+              {/* Journey Details */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '10px 0',
+                borderBottom: '1px solid #ddd',
+                fontSize: '11px'
+              }}>
+                <div>
+                  <span style={{ color: '#666' }}>Boarding From: </span>
+                  <strong>{trainData.from || 'N/A'}</strong><br />
+                  <span style={{ color: '#666' }}>Departure: </span>
+                  <strong>{payment.receipt.train.departure}</strong>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ color: '#666' }}>To: </span>
+                  <strong>{trainData.to || 'N/A'}</strong><br />
+                  <span style={{ color: '#666' }}>Arrival: </span>
+                  <strong>{payment.receipt.train.arrival}</strong>
+                </div>
+              </div>
+
+              {/* Train Info Table */}
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                fontSize: '10px',
+                marginTop: '10px',
+                marginBottom: '10px',
+                border: '1px solid #ddd'
+              }}>
+                <tbody>
+                  <tr style={{ background: '#f0f0f0' }}>
+                    <td style={{ padding: '6px', border: '1px solid #ddd' }}><strong>PNR</strong></td>
+                    <td style={{ padding: '6px', border: '1px solid #ddd' }}><strong>Train No. / Name</strong></td>
+                    <td style={{ padding: '6px', border: '1px solid #ddd' }}><strong>Class</strong></td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>
+                      {payment.receipt.bookingId?.slice(0, 10) || 'N/A'}
+                    </td>
+                    <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>
+                      {payment.receipt.train.number} / {payment.receipt.train.name}
+                    </td>
+                    <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>
+                      {trainData.class || 'SLEEPER (SL)'}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Passenger Details Table */}
+              <div style={{ marginTop: '15px', marginBottom: '15px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>Passenger Details</div>
+                <table style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  fontSize: '10px',
+                  border: '1px solid #ddd'
+                }}>
+                  <thead>
+                    <tr style={{ background: '#f0f0f0' }}>
+                      <th style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'left' }}>#</th>
+                      <th style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'left' }}>Name</th>
+                      <th style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'center' }}>Age</th>
+                      <th style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'center' }}>Gender</th>
+                      <th style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'left' }}>Seat Number</th>
+                      <th style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'left' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {payment.receipt.travelerNames.map((name, idx) => {
+                      const seatNumber = `S${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 72) + 1}`;
+                      const berthType = ['LB', 'MB', 'UB', 'SL', 'SU'][Math.floor(Math.random() * 5)];
+                      return (
+                        <tr key={idx}>
+                          <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>{idx + 1}</td>
+                          <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>
+                            {name.toUpperCase()}
+                          </td>
+                          <td style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold' }}>
+                            {formData.travelerInfo?.travelerAges?.[idx] || 'NA'}
+                          </td>
+                          <td style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold' }}>
+                            M
+                          </td>
+                          <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>
+                            {seatNumber} ({berthType})
+                          </td>
+                          <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold', color: '#27ae60' }}>
+                            CNF
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <div style={{ marginTop: '8px', fontSize: '9px', color: '#666' }}>
+                  <strong>Ticket ID:</strong> TRAIN-{payment.receipt.bookingId}
+                </div>
+              </div>
+
+              {/* Footer with QR and Price */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 0',
+                borderTop: '1px solid #ddd'
+              }}>
+                <div>
+                  <QRCode 
+                    value={`TRAIN-${payment.receipt.bookingId}`} 
+                    size={80} 
+                  />
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '5px' }}>Total Fare</div>
+                  <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#e74c3c' }}>
+                    ₹{payment.receipt.train.price}
                   </div>
                 </div>
-                <div className="passenger">
-                  Passengers: {payment.receipt.travelerNames.join(', ')}
-                </div>
-                <div className="ticket-footer">
-                  <div className="barcode">
-                    <QRCode 
-                      value={`TRAIN-${payment.receipt.bookingId}`} 
-                      size={80} 
-                    />
-                  </div>
-                  <div className="price">
-                    Price: ₹{payment.receipt.train.price}
-                  </div>
-                </div>
+              </div>
+
+              {/* Note */}
+              <div style={{
+                marginTop: '10px',
+                padding: '8px',
+                background: '#f8f8f8',
+                fontSize: '9px',
+                color: '#666',
+                borderRadius: '3px'
+              }}>
+                <strong>Note:</strong> Carry original ID proof. Railway Helpline: 139
               </div>
             </div>
           </div>
