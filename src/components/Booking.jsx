@@ -798,6 +798,7 @@ const Booking = ({ addBooking }) => {
   });
   const [currentStep, setCurrentStep] = useState(1);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [generatingTicket, setGeneratingTicket] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [transportError, setTransportError] = useState('');
   const [destinationError, setDestinationError] = useState('');
@@ -1430,7 +1431,13 @@ seatsAvailable: 10
     };
     
     setPayment(prev => ({ ...prev, receipt }));
-    setShowReceipt(true);
+    setGeneratingTicket(true);
+    
+    // Show loading message for 2 seconds before showing receipt
+    setTimeout(() => {
+      setGeneratingTicket(false);
+      setShowReceipt(true);
+    }, 2000);
   };
 
   const nextStep = () => {
@@ -2632,10 +2639,10 @@ seatsAvailable: 10
                             {name.toUpperCase()}
                           </td>
                           <td style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold' }}>
-                            {formData.travelerInfo?.travelerAges?.[idx] || 'NA'}
+                            {formData.passengerDetails?.[idx]?.age || 'NA'}
                           </td>
                           <td style={{ padding: '6px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold' }}>
-                            M
+                            {formData.passengerDetails?.[idx]?.gender ? formData.passengerDetails[idx].gender.charAt(0).toUpperCase() : 'NA'}
                           </td>
                           <td style={{ padding: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}>
                             {seatNumber} ({berthType})
@@ -2763,7 +2770,49 @@ seatsAvailable: 10
 
   return (
     <div className="booking-container">
-      {!showReceipt ? (
+      {generatingTicket ? (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '60vh',
+          textAlign: 'center',
+          padding: '40px 20px'
+        }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            border: '6px solid #f3f3f3',
+            borderTop: '6px solid #4CAF50',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            marginBottom: '30px'
+          }}></div>
+          <h2 style={{
+            fontSize: '28px',
+            color: '#333',
+            marginBottom: '15px',
+            fontWeight: '600'
+          }}>Please wait a moment...</h2>
+          <p style={{
+            fontSize: '18px',
+            color: '#666',
+            marginBottom: '10px'
+          }}>Your ticket is being generated</p>
+          <p style={{
+            fontSize: '16px',
+            color: '#4CAF50',
+            fontWeight: '500'
+          }}>Thank you for booking with us! 🎉</p>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}} />
+        </div>
+      ) : !showReceipt ? (
         <form onSubmit={handleSubmit}>
           <div className="booking-header">
             <h1>Book Your Travel Package</h1>
