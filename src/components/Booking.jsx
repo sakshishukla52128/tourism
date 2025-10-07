@@ -737,13 +737,11 @@ const Booking = ({ addBooking }) => {
     from: '',
     to: '',
     departureDate: '',
-    returnDate: '',
     passengers: 1,
     class: 'Economy',
     selectedFlight: null,
     availableFlights: [],
-    returnFlight: null, // Add this line
-    availableReturnFlights: [] // Add this line
+    airportCode: ''
   });
 
   // Hotel booking state
@@ -822,9 +820,6 @@ const Booking = ({ addBooking }) => {
     // Flight cost
     if (formData.addons.flight && flightData.selectedFlight) {
       total += flightData.selectedFlight.price * flightData.passengers;
-    }
-    if (formData.addons.flight && flightData.returnFlight) {
-      total += flightData.returnFlight.price * flightData.passengers;
     }
     
     // Hotel cost
@@ -953,7 +948,7 @@ const Booking = ({ addBooking }) => {
     if (formData.addons.flight && flightData.from && flightData.to && flightData.departureDate) {
       fetchFlights();
     }
-  }, [flightData.from, flightData.to, flightData.departureDate, flightData.returnDate, flightData.class]);
+  }, [flightData.from, flightData.to, flightData.departureDate, flightData.class]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -1066,12 +1061,8 @@ seatsAvailable: 10
       }
     ];
 
-    if (flightData.roundTrip) {
-      const dummyReturnFlights = dummyFlights.map(flight => ({ ...flight, id: flight.id + 100, price: flight.price * 0.9 }));
-      setFlightData(prev => ({ ...prev, availableFlights: dummyFlights, availableReturnFlights: dummyReturnFlights }));
-    } else {
-      setFlightData(prev => ({ ...prev, availableFlights: dummyFlights, availableReturnFlights: [], returnFlight: null }));
-    }
+    // Set only one-way flights
+    setFlightData(prev => ({ ...prev, availableFlights: dummyFlights }));
   };
 
   const fetchHotels = async () => {
@@ -1423,7 +1414,7 @@ seatsAvailable: 10
       duration: `${formData.duration} days`,
       travelers: formData.travelers,
       totalAmount: payment.amount,
-      flight: formData.addons.flight ? { ...flightData.selectedFlight, returnFlight: flightData.returnFlight } : null,
+      flight: formData.addons.flight ? { ...flightData.selectedFlight, airportCode: flightData.airportCode } : null,
       hotel: formData.addons.hotel ? hotelData.selectedHotel : null,
       car: formData.addons.car ? carData.selectedCar : null,
       train: formData.addons.train ? trainData.selectedTrain : null,
@@ -1433,11 +1424,11 @@ seatsAvailable: 10
     setPayment(prev => ({ ...prev, receipt }));
     setGeneratingTicket(true);
     
-    // Show loading message for 2 seconds before showing receipt
+    // Show loading message briefly before showing receipt (fast display)
     setTimeout(() => {
       setGeneratingTicket(false);
       setShowReceipt(true);
-    }, 2000);
+    }, 500);
   };
 
   const nextStep = () => {
@@ -1779,30 +1770,21 @@ seatsAvailable: 10
                   />
                 </div>
                 
-                <div className="form-group">
-                  <div className="round-trip-group">
-                    <input
-                      type="checkbox"
-                      name="roundTrip"
-                      checked={flightData.roundTrip}
-                      onChange={handleFlightInputChange}
-                    />
-                    <label>Round Trip?</label>
-                  </div>
+                <div className="info-message" style={{
+                  backgroundColor: '#fff3e0',
+                  border: '1px solid #ff9800',
+                  borderRadius: '8px',
+                  padding: '12px 15px',
+                  margin: '15px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}>
+                  <span style={{ fontSize: '20px' }}>✈️</span>
+                  <span style={{ color: '#e65100', fontSize: '14px' }}>
+                    <strong>Travel Tip:</strong> Planning to return? Book your return flight separately for better flexibility and exclusive deals!
+                  </span>
                 </div>
-                
-                {flightData.roundTrip && (
-                  <div className="form-group">
-                    <label>Return Date</label>
-                    <input
-                      type="date"
-                      name="returnDate"
-                      value={flightData.returnDate}
-                      onChange={handleFlightInputChange}
-                      min={flightData.departureDate}
-                    />
-                  </div>
-                )}
                 
                 <div className="form-group">
                   <label>Passengers</label>
@@ -1837,27 +1819,6 @@ seatsAvailable: 10
                         key={flight.id} 
                         className={`flight-option ${flightData.selectedFlight?.id === flight.id ? 'selected' : ''}`}
                         onClick={() => selectFlight(flight)}
-                      >
-                        <div className="flight-airline">{flight.airline}</div>
-                        <div className="flight-number">{flight.flightNumber}</div>
-                        <div className="flight-time">
-                          {flight.departure} - {flight.arrival} ({flight.duration})
-                        </div>
-                        <div className="flight-price">₹{flight.price}</div>
-                        <div className="flight-seats">{flight.seatsAvailable} seats left</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {flightData.roundTrip && flightData.availableReturnFlights.length > 0 && (
-                  <div className="flight-options">
-                    <h4>Available Return Flights</h4>
-                    {flightData.availableReturnFlights.map(flight => (
-                      <div 
-                        key={flight.id} 
-                        className={`flight-option ${flightData.returnFlight?.id === flight.id ? 'selected' : ''}`}
-                        onClick={() => setFlightData(prev => ({ ...prev, returnFlight: flight }))}
                       >
                         <div className="flight-airline">{flight.airline}</div>
                         <div className="flight-number">{flight.flightNumber}</div>
@@ -2442,38 +2403,77 @@ seatsAvailable: 10
         
         {formData.addons.flight && payment.receipt.flight && (
           <div className="receipt-section">
-            <h3>Flight Ticket</h3>
-            <div className="ticket">
-              <div className="ticket-header">
-                <div className="airline">{payment.receipt.flight.airline}</div>
-                <div className="flight-number">{payment.receipt.flight.flightNumber}</div>
+            <h3>✈️ Flight Booking Confirmation</h3>
+            <div className="email-notification-box" style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              padding: '30px',
+              borderRadius: '15px',
+              textAlign: 'center',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              marginTop: '15px'
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '15px' }}>📧</div>
+              <h2 style={{ 
+                fontSize: '24px', 
+                fontWeight: 'bold', 
+                marginBottom: '15px',
+                color: 'white',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}>
+                YOUR FLIGHT TICKET HAS BEEN SENT!
+              </h2>
+              <p style={{ 
+                fontSize: '16px', 
+                lineHeight: '1.6',
+                marginBottom: '10px',
+                color: '#f0f0f0'
+              }}>
+                Your e-ticket for <strong>{payment.receipt.flight.airline} - {payment.receipt.flight.flightNumber}</strong> has been successfully delivered to your email address.
+              </p>
+              <p style={{ 
+                fontSize: '15px',
+                marginBottom: '15px',
+                color: '#ffffff',
+                fontWeight: '500'
+              }}>
+                📬 Sent to: <strong>{formData.travelerInfo.email}</strong>
+              </p>
+              <div style={{
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                padding: '15px',
+                borderRadius: '10px',
+                marginTop: '20px'
+              }}>
+                <p style={{ 
+                  fontSize: '14px', 
+                  margin: '5px 0',
+                  color: '#fff'
+                }}>
+                  <strong>Route:</strong> {flightData.from} → {flightData.to}
+                </p>
+                <p style={{ 
+                  fontSize: '14px', 
+                  margin: '5px 0',
+                  color: '#fff'
+                }}>
+                  <strong>Departure:</strong> {payment.receipt.flight.departure}
+                </p>
+                <p style={{ 
+                  fontSize: '14px', 
+                  margin: '5px 0',
+                  color: '#fff'
+                }}>
+                  <strong>Passengers:</strong> {payment.receipt.travelerNames.join(', ')}
+                </p>
               </div>
-              <div className="ticket-body">
-                <div className="from-to">
-                  <div className="departure">
-                    <div className="city">{flightData.from}</div>
-                    <div className="time">{payment.receipt.flight.departure}</div>
-                  </div>
-                  <div className="arrow">→</div>
-                  <div className="arrival">
-                    <div className="city">{flightData.to}</div>
-                    <div className="time">{payment.receipt.flight.arrival}</div>
-                  </div>
-                </div>
-                <div className="passenger">
-                  Passengers: {payment.receipt.travelerNames.join(', ')}
-                </div>
-                <div className="ticket-footer">
-                  <div className="barcode">
-                    <QRCode 
-                      value={`FLIGHT-${payment.receipt.bookingId}`} 
-                      size={80} 
-                    />
-                  </div>
-                  <div className="price">
-                    Price: ₹{payment.receipt.flight.price}
-                  </div>
-                </div>
+              <div style={{ 
+                marginTop: '20px', 
+                fontSize: '13px',
+                color: '#e0e0e0'
+              }}>
+                💡 Please check your inbox and spam folder
               </div>
             </div>
           </div>
