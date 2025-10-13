@@ -311,11 +311,7 @@ const Home = ({ isAuthenticated }) => {
             </div>
             {!isAuthenticated && (
               <>
-                <div className="footer-newsletter">
-                  <h3>Stay Updated</h3>
-                  <input type="email" placeholder="Your email" />
-                  <button className="footer-subscribe">Subscribe</button>
-                </div>
+                
                 <div className="app-download">
                   <h3>Download Our App</h3>
                   <div className="app-buttons">
